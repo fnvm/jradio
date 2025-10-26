@@ -21,10 +21,8 @@ public class Player {
 	private static final Logger LOGGER = System.getLogger(Player.class.getName());
 
 	public Player() {
-		String prefix = System.getenv("PREFIX");
-
 		ffplayAvailable = true;
-		if (prefix != null && prefix.contains("com.termux")) {
+		if (isFfplayInPath()) {
 			ffplayCommand = "ffplay";
 		} else {
 			try {
@@ -79,6 +77,26 @@ public class Player {
 
 	public String getStreamTitle() {
 		return streamTitle;
+	}
+
+	private boolean isFfplayInPath() {
+		try {
+			Process process = new ProcessBuilder("ffplay", "-version").redirectErrorStream(true).start();
+
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (line.toLowerCase().contains("ffplay")) {
+						return true;
+					}
+				}
+			}
+
+			int exitCode = process.waitFor();
+			return exitCode == 0;
+		} catch (IOException | InterruptedException e) {
+			return false;
+		}
 	}
 
 	public void readMetadata() {

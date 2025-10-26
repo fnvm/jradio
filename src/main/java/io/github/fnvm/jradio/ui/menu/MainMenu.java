@@ -1,6 +1,9 @@
 package io.github.fnvm.jradio.ui.menu;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import io.github.fnvm.jradio.ui.terminal.MenuController;
 import io.github.fnvm.jradio.ui.terminal.TerminalManager;
@@ -13,8 +16,7 @@ public class MainMenu {
 	}
 
 	public void run() throws IOException {
-		MenuController mainMenu = new MenuController(terminal, "Jradio", 0,
-				new String[] { "All Stations", "Recently Played", "Exit" });
+		
 
 		// TODO выход из меню на кнопку B
 		// TODO отображение текущего трека
@@ -24,18 +26,23 @@ public class MainMenu {
 		RecentlyPlayed recentlyPlayed = new RecentlyPlayed();
 
 		while (true) {
+			final boolean[] back = { false };
+			Map<Character, Consumer<Integer>> hotkeys = new HashMap<>();
+			hotkeys.put('b', (c) -> back[0] = true);
+			
+			MenuController mainMenu = new MenuController(terminal, "Jradio", 0, new String[] {}, hotkeys,
+					new String[] { "All Stations", "Recently Played", "Exit" });
+			
 			int choice = mainMenu.show();
 
+			if (back[0] == true) System.exit(0);
 			switch (choice) {
-			case -1 -> exit();
+			case -1 -> System.exit(0);
 			case 0 -> stationsMenu.showStationsMenu(terminal);
 			case 1 -> recentlyPlayed.showRecentlyPlayed(terminal);
-			case 2 -> exit();
+			case 2 -> System.exit(0);
 			}
 		}
 	}
 
-	private void exit() {
-		System.exit(0);
-	}
 }
