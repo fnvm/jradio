@@ -1,6 +1,7 @@
 package io.github.fnvm.jradio.ui.menu.actions;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import io.github.fnvm.jradio.core.model.RadioStation;
 import io.github.fnvm.jradio.core.service.RadioStationsService;
@@ -12,15 +13,15 @@ public class AddStationAction implements MenuAction {
 	@Override
 	public void execute(TerminalManager terminal, RadioStationsService service) throws IOException {
 		terminal.clearScreen();
-		System.out.println("=== Add new station ===");
+		System.out.println("=".repeat(16) + " Add new station " + "=".repeat(16));
 		System.out.print("Name: ");
 		String name = InputReader.readUserInput(terminal);
-		if (name == null)
+		if (Objects.isNull(name))
 			return;
 
 		System.out.print("URL: ");
 		String url = InputReader.readUserInput(terminal);
-		if (url == null)
+		if (Objects.isNull(url))
 			return;
 		service.addStation(new RadioStation(name.trim(), url.trim()));
 	}

@@ -17,8 +17,6 @@ public class MainMenu {
 
 	public void run() throws IOException {
 		
-
-		// TODO выход из меню на кнопку B
 		// TODO отображение текущего трека
 		// TODO история треков
 
