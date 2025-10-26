@@ -44,7 +44,7 @@ public final class EditStationAction implements MenuAction {
 
 			MenuController options = new MenuController(terminal, "Edit Station", currentSelection, inactiveItems,
 					hotkeys, "Name", "URL", "Note", "Toggle favorites");
-			currentSelection = options.show();
+			currentSelection = options.show() - 10_000;
 
 			if (back[0]) {
 				return;
