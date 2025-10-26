@@ -41,12 +41,14 @@ public class StationsMenu {
 			options.put('e', (currentSelection) -> runAction(new EditStationAction(currentSelection), terminal));
 
 			options.put('p', (currentSelection) -> {
-				RadioStation station = stations.get(currentSelection);
-				if (player.isPlaying() && station.equals(player.getCurrentStation())) {
-					player.stop();
-				} else {
-					player.stop();
-					player.play(station);
+				if (currentSelection < stations.size()) {
+					RadioStation station = stations.get(currentSelection);
+					if (player.isPlaying() && station.equals(player.getCurrentStation())) {
+						player.stop();
+					} else {
+						player.stop();
+						player.play(station);
+					}
 				}
 			});
 			options.put('b', (currentSelection) -> {
