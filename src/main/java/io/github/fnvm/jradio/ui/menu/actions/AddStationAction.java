@@ -18,10 +18,12 @@ public class AddStationAction implements MenuAction {
 		String name = InputReader.readUserInput(terminal);
 		if (Objects.isNull(name))
 			return;
+		if (name.isBlank())
+			name = "Unknown";
 
 		System.out.print("URL: ");
 		String url = InputReader.readUserInput(terminal);
-		if (Objects.isNull(url))
+		if (Objects.isNull(url) || url.isBlank())
 			return;
 		service.addStation(new RadioStation(name.trim(), url.trim()));
 	}
