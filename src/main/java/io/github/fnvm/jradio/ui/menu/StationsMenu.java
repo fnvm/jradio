@@ -23,9 +23,9 @@ public class StationsMenu {
 	
 	private static final Logger LOGGER = System.getLogger(StationsMenu.class.getName());
 
-	public StationsMenu() {
+	public StationsMenu(Player player) {
 		this.stationService = new RadioStationsService();
-		player = new Player();
+		this.player = player;
 		selection = 0;
 	}
 

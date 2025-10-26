@@ -28,6 +28,7 @@ public class Player {
 			try {
 				File ffplayBinary = new StorageManager().extractFfplay();
 				ffplayCommand = ffplayBinary.getAbsolutePath();
+				LOGGER.log(Level.INFO, () -> "Using ffplay binary: " + ffplayCommand);
 			} catch (IOException e) {
 				LOGGER.log(Level.ERROR, () -> "Failed to extract ffplay " + e.getMessage());
 				ffplayAvailable = false;
