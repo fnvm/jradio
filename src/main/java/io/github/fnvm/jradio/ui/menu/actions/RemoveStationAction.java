@@ -20,7 +20,7 @@ public class RemoveStationAction implements MenuAction {
 
 		MenuController yn = new MenuController(terminal, "Remove station?", 0, "yes", "no");
 
-		int choise = yn.show();
+		int choise = yn.show() - 10_000;
 		if (choise == 0) {
 			RadioStation curr = service.getAllStations().get(currentSelection);
 			service.removeStation(curr.getId());

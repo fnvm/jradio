@@ -1,6 +1,8 @@
 package io.github.fnvm.jradio.ui.menu;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,9 @@ public class StationsMenu {
 
 	private final RadioStationsService stationService;
 	private final Player player;
-
 	private int selection;
+	
+	private static final Logger LOGGER = System.getLogger(StationsMenu.class.getName());
 
 	public StationsMenu() {
 		this.stationService = new RadioStationsService();
@@ -73,7 +76,7 @@ public class StationsMenu {
 		try {
 			action.execute(terminal, stationService);
 		} catch (IOException e) {
-
+			LOGGER.log(Level.ERROR, () -> "Failed action " + action.getClass().getName() + " " + e.getMessage());
 		}
 	}
 }

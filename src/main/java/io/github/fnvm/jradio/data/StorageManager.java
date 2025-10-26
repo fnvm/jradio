@@ -65,11 +65,14 @@ public class StorageManager {
 	public File extractFfplay() throws IOException {
 		String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
 
-		String resourcePath = switch (os) {
-		case "win" -> "/ffmpeg/windows/ffplay.exe";
-		case "linux" -> "/ffmpeg/linux/ffplay";
-		default -> throw new FileNotFoundException("Binary for your system not found");
-		};
+		String resourcePath;
+		if (os.contains("win")) {
+			resourcePath = "/ffmpeg/windows/ffplay.exe";
+		} else if (os.contains("linux")) {
+			resourcePath = "/ffmpeg/linux/ffplay";
+		} else {
+			throw new FileNotFoundException("Binary for your system not found");
+		}
 
 		InputStream in = getClass().getResourceAsStream(resourcePath);
 		Path targetPath = CONFIG_DIR.resolve(resourcePath.substring(resourcePath.lastIndexOf('/') + 1));
