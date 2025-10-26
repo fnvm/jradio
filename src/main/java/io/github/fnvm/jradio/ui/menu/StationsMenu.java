@@ -44,14 +44,15 @@ public class StationsMenu {
 
 			options.put('p', (currentSelection) -> {
 				if (currentSelection < stations.size()) {
+					currentPlayingStation = "";
 					RadioStation station = stations.get(currentSelection);
 					if (player.isPlaying() && station.equals(player.getCurrentStation())) {
 						player.stop();
-						currentPlayingStation = "";
 					} else {
 						player.stop();
 						player.play(station);
-						currentPlayingStation = "Playing: " + station.getName();
+						if (player.isPlaying())
+							currentPlayingStation = "Playing: " + station.getName();
 					}
 				}
 			});
