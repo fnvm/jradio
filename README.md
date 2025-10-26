@@ -13,7 +13,7 @@ A simple console radio written in Java
 During the build, the project expects the `ffplay` binary to be present in one of the following directories:
 
 - For Windows: `src/main/resources/ffmpeg/windows/`
-- For Linux (64-bit): `src/main/resources/ffmpeg/linux64/`
+- For Linux: `src/main/resources/ffmpeg/linux64/`
 
 To build the project:
 
