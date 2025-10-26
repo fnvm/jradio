@@ -16,6 +16,11 @@ public class RemoveStationAction implements MenuAction {
 
 	@Override
 	public void execute(TerminalManager terminal, RadioStationsService service) throws IOException {
+		
+		if (currentSelection >= service.getAllStations().size()) {
+			return;
+		}
+		
 		terminal.clearScreen();
 
 		MenuController yn = new MenuController(terminal, "Remove station?", 0, "yes", "no");
