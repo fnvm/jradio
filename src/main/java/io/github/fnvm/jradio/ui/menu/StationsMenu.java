@@ -20,13 +20,15 @@ public class StationsMenu {
 	private final RadioStationsService stationService;
 	private final Player player;
 	private int selection;
-	
+	private String currentPlayingStation;
+
 	private static final Logger LOGGER = System.getLogger(StationsMenu.class.getName());
 
 	public StationsMenu(Player player) {
 		this.stationService = new RadioStationsService();
 		this.player = player;
 		selection = 0;
+		currentPlayingStation = "";
 	}
 
 	public void showStationsMenu(TerminalManager terminal) throws IOException {
@@ -45,9 +47,11 @@ public class StationsMenu {
 					RadioStation station = stations.get(currentSelection);
 					if (player.isPlaying() && station.equals(player.getCurrentStation())) {
 						player.stop();
+						currentPlayingStation = "";
 					} else {
 						player.stop();
 						player.play(station);
+						currentPlayingStation = "Playing: " + station.getName();
 					}
 				}
 			});
@@ -56,8 +60,7 @@ public class StationsMenu {
 			});
 
 			String[] inactiveItems = new String[] { "Play / Pause (P)", "Add Station (A)", "Remove Station (D)",
-					"Edit Station (E)", "", "↩  Back (B)", "",
-					(player.isPlaying()) ? "Playing: " + player.getCurrentStation().getName() : "" };
+					"Edit Station (E)", "", "↩  Back (B)", "", currentPlayingStation };
 
 			MenuController stationsMenu = new MenuController(terminal, "Stations List", selection, inactiveItems,
 					options, stationNames);

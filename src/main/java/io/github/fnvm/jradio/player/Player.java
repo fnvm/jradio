@@ -37,7 +37,6 @@ public class Player {
 
 		metadata = new ConcurrentHashMap<>();
 		currentStation = new RadioStation("", "");
-
 	}
 
 	public void play(RadioStation station) {
@@ -67,7 +66,6 @@ public class Player {
 		if (process != null && process.isAlive()) {
 			process.destroy();
 		}
-
 	}
 
 	public boolean isPlaying() {

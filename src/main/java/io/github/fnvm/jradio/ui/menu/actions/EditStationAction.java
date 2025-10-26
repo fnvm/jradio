@@ -25,7 +25,9 @@ public final class EditStationAction implements MenuAction {
 	public void execute(TerminalManager terminal, RadioStationsService service) throws IOException {
 		while (true) {
 			terminal.clearScreen();
-
+			if (currentStationSelection >= service.getAllStations().size()) {
+				return;
+			}
 			RadioStation currentStation = service.getAllStations().get(currentStationSelection);
 			String[] inactiveItems = new String[5];
 			inactiveItems[0] = currentStation.getName();
