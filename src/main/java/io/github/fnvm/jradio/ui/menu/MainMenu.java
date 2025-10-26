@@ -31,7 +31,7 @@ public class MainMenu {
 			MenuController mainMenu = new MenuController(terminal, "Jradio", 0, new String[] {}, hotkeys,
 					new String[] { "All Stations", "Recently Played", "Exit" });
 			
-			int choice = mainMenu.show();
+			int choice = mainMenu.show() - 10_000;
 
 			if (back[0] == true) System.exit(0);
 			switch (choice) {

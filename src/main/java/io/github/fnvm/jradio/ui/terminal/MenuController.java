@@ -4,6 +4,7 @@ import org.jline.keymap.KeyMap;
 import org.jline.utils.InfoCmp.Capability;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class MenuController {
@@ -38,14 +39,14 @@ public class MenuController {
 		while (true) {
 			String key = terminal.getBindingReader().readBinding(keyMap, null, true);
 
-			if (key == null)
+			if (Objects.isNull(key))
 				continue;
 
 			switch (key) {
 			case "up" -> moveUp();
 			case "down" -> moveDown();
 			case "enter" -> {
-				return currentSelection;
+				return currentSelection + 10_000;
 			}
 			default -> {
 				boolean handled = handleHotkey(key);

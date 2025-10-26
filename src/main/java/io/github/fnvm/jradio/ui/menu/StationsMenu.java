@@ -59,6 +59,10 @@ public class StationsMenu {
 
 			try {
 				selection = stationsMenu.show();
+				if (selection >= 10_000) {
+					selection -= 10_000;
+					new EditStationAction(selection).execute(terminal, stationService);
+				}
 			} catch (ExitMenuException ex) {
 				break;
 			}
