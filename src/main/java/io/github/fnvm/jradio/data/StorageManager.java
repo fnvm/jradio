@@ -67,7 +67,7 @@ public class StorageManager {
 
 		String resourcePath = switch (os) {
 		case "win" -> "/ffmpeg/windows/ffplay.exe";
-		case "linux" -> "/ffmpeg/linux64/ffplay";
+		case "linux" -> "/ffmpeg/linux/ffplay";
 		default -> throw new FileNotFoundException("Binary for your system not found");
 		};
 
@@ -89,8 +89,6 @@ public class StorageManager {
 
 		if (os.contains("win")) {
 			return Path.of(System.getenv("APPDATA"), "jradio");
-		} else if (os.contains("mac")) {
-			return Path.of(System.getProperty("user.home"), "Library", "Application Support", "jradio");
 		} else {
 			return Path.of(System.getProperty("user.home"), ".config", "jradio");
 

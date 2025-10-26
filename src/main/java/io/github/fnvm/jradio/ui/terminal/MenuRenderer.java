@@ -18,7 +18,7 @@ public class MenuRenderer {
 
 	public void render(int currentSelection) {
 		terminal.clearScreen();
-		terminal.println("======== " + title + " ========\n");
+		terminal.println("=".repeat(16) + " " + title + " " + "=".repeat(16) + System.lineSeparator());
 
 		for (int i = 0; i < Math.max(inactiveItems.length, menuItems.length); i++) {
 			String[] items = buildLine(i);
