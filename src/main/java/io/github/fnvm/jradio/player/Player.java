@@ -63,8 +63,18 @@ public class Player {
 			builder.redirectErrorStream(true);
 			process = builder.start();
 			LOGGER.log(Level.INFO, () -> "Playing station: " + station.getName());
-			recentlyPlayed.add(station.getName());
-			new StorageManager().saveHistory(recentlyPlayed);
+
+			if (recentlyPlayed.size() > 0) {
+				if (!(recentlyPlayed.get(recentlyPlayed.size() - 1).equals(station.getName()))) {
+					recentlyPlayed.add(station.getName());
+					new StorageManager().saveHistory(recentlyPlayed);
+				}
+			} else {
+				recentlyPlayed.add(station.getName());
+				new StorageManager().saveHistory(recentlyPlayed);
+
+			}
+
 			new Thread(this::readMetadata).start();
 
 		} catch (IOException e) {

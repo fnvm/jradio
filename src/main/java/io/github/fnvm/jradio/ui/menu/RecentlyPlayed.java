@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import io.github.fnvm.jradio.data.StorageManager;
 import io.github.fnvm.jradio.ui.terminal.MenuController;
 import io.github.fnvm.jradio.ui.terminal.TerminalManager;
 
@@ -24,10 +25,19 @@ public class RecentlyPlayed {
 		Map<Character, Consumer<Integer>> options = new HashMap<>();
 		boolean[] back = new boolean[] { false };
 		options.put('b', (c) -> back[0] = true);
+		options.put('d', (c) -> {
+			try {
+				new StorageManager().removeHistory();
 
+			} catch (IOException e) {
+
+			}
+
+		});
 		String[] inactiveItems = new String[] { "Remove history (D)", "↩  Back (B)" };
 
 		while (true) {
+			recentlyPlayed = new StorageManager().loadHistory();
 			String[] recentlyPlayedTitles = recentlyPlayed.stream().toArray(String[]::new);
 			MenuController resentlyPlayedMenu = new MenuController(terminal, "Recently Played", currentSelection,
 					inactiveItems, options,
