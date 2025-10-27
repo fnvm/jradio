@@ -29,7 +29,7 @@ public class MainMenu {
 	public void run() throws IOException {
 
 		// TODO отображение текущего трека
-		// TODO история треков
+		// TODO история треков с названием трека
 		
 
 		StationsMenu stationsMenu = new StationsMenu(player);

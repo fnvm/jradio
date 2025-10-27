@@ -1,7 +1,11 @@
 package io.github.fnvm.jradio.ui.menu;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -28,10 +32,13 @@ public class RecentlyPlayed {
         options.put('d', (c) -> historyService.clear());
         
         while (!back[0]) {
-            String[] items = historyService.getAll().toArray(String[]::new);
+        	List<String> list = new ArrayList<>(historyService.getAll());
+        	Collections.reverse(list);
+        	String[] items = list.toArray(String[]::new);
+            
             MenuController menu = new MenuController(terminal, "Recently Played",
                 currentSelection,
-                new String[]{"Clear history (D)", "↩ Back (B)"},
+                new String[]{"Clear history (D)", "", "↩ Back (B)"},
                 options,
                 items);
 
