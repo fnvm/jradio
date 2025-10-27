@@ -75,6 +75,7 @@ public class MenuController {
 	private boolean handleHotkey(String key) {
 		if (key.length() == 1) {
 			char c = Character.toLowerCase(key.charAt(0));
+			
 			Consumer<Integer> action = hotkeys.get(c);
 			if (action != null) {
 				action.accept(currentSelection);
