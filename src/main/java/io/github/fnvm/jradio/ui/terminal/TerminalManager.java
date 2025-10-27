@@ -1,17 +1,19 @@
 package io.github.fnvm.jradio.ui.terminal;
 
-import org.apache.log4j.Logger;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.keymap.BindingReader;
 import org.jline.utils.InfoCmp.Capability;
+
 import org.jline.utils.NonBlockingReader;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 
 public class TerminalManager implements AutoCloseable {
 
-	private static final Logger log = Logger.getLogger("io.github.fnvm.jradio");
+	private static final Logger LOGGER = System.getLogger(TerminalManager.class.getName());
 	private final Terminal terminal;
 	private final NonBlockingReader reader;
 	private final BindingReader bindingReader;
@@ -26,7 +28,7 @@ public class TerminalManager implements AutoCloseable {
 			bindingReader = new BindingReader(reader);
 
 		} catch (IOException e) {
-			log.error("Failed to initialize terminal", e);
+			LOGGER.log(Level.ERROR, "Failed to initialize terminal", e);
 			throw new RuntimeException("Terminal initialization error", e);
 		}
 	}
