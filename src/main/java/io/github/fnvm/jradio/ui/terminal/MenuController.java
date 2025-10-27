@@ -11,7 +11,7 @@ public class MenuController {
 
 	private final TerminalManager terminal;
 	private final MenuRenderer renderer;
-	private final Map<Character, Consumer<Integer>> hotkeys;
+	private final Map<String, Consumer<Integer>> hotkeys;
 	private final String[] menuItems;
 	private final KeyMap<String> keyMap;
 
@@ -22,7 +22,7 @@ public class MenuController {
 	}
 
 	public MenuController(TerminalManager terminal, String title, int currentSelection, String[] inactiveItems,
-			Map<Character, Consumer<Integer>> hotkeys, String... menuItems) {
+			Map<String, Consumer<Integer>> hotkeys, String... menuItems) {
 
 		this.terminal = terminal;
 		this.renderer = new MenuRenderer(terminal, title, inactiveItems, menuItems);
@@ -73,17 +73,11 @@ public class MenuController {
 	}
 
 	private boolean handleHotkey(String key) {
-		if (key.length() == 1) {
-			char c = Character.toLowerCase(key.charAt(0));
-			
-			Consumer<Integer> action = hotkeys.get(c);
+		if (!key.isBlank()) {
+		
+			Consumer<Integer> action = hotkeys.get(key.toLowerCase());
 			if (action != null) {
 				action.accept(currentSelection);
-				if (c == 'd') {
-					if (currentSelection != 0) {
-						currentSelection--;
-					}
-				}
 				return true;
 			}
 		}
@@ -105,10 +99,10 @@ public class MenuController {
 		map.bind("enter", "\n");
 
 		hotkeys.keySet().forEach(c -> {
-			char lower = Character.toLowerCase(c);
-			char upper = Character.toUpperCase(c);
-			map.bind(String.valueOf(lower), String.valueOf(lower));
-			map.bind(String.valueOf(upper), String.valueOf(lower));
+			String lower = c.toLowerCase();
+			String upper = c.toUpperCase();
+			map.bind(lower, lower);
+			map.bind(upper, lower);
 		});
 
 		map.setUnicode("default");

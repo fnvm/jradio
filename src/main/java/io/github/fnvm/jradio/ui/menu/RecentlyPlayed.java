@@ -25,10 +25,10 @@ public class RecentlyPlayed {
 	public void showRecentlyPlayed(TerminalManager terminal) throws IOException {
 
 		currentSelection = 0;
-        Map<Character, Consumer<Integer>> options = new HashMap<>();
+        Map<String, Consumer<Integer>> options = new HashMap<>();
         boolean[] back = { false };
-        options.put('b', (c) -> back[0] = true);
-        options.put('d', (c) -> historyService.clear());
+        options.put("b", (c) -> back[0] = true);
+        options.put("d", (c) -> historyService.clear());
         
         while (!back[0]) {
         	List<String> list = new ArrayList<>(historyService.getAll());

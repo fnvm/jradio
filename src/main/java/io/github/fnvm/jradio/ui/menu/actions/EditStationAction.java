@@ -41,8 +41,8 @@ public final class EditStationAction implements MenuAction {
 			inactiveItems[4] = System.lineSeparator() + "↩  Back (B)";
 
 			final boolean[] back = { false };
-			Map<Character, Consumer<Integer>> hotkeys = new HashMap<>();
-			hotkeys.put('b', (c) -> back[0] = true);
+			Map<String, Consumer<Integer>> hotkeys = new HashMap<>();
+			hotkeys.put("b", (c) -> back[0] = true);
 
 			MenuController options = new MenuController(terminal, "Edit Station", currentSelection, inactiveItems,
 					hotkeys, "Name", "URL", "Note", "Toggle favorites");

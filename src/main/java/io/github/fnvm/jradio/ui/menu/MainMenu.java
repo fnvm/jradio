@@ -37,8 +37,8 @@ public class MainMenu {
 
 		while (true) {
 			final boolean[] back = { false };
-			Map<Character, Consumer<Integer>> hotkeys = new HashMap<>();
-			hotkeys.put('b', (c) -> back[0] = true);
+			Map<String, Consumer<Integer>> hotkeys = new HashMap<>();
+			hotkeys.put("b", (c) -> back[0] = true);
 
 			MenuController mainMenu = new MenuController(terminal, "Jradio", currentSelection, new String[] {}, hotkeys,
 					new String[] { "All Stations", "Recently Played", "Exit" });

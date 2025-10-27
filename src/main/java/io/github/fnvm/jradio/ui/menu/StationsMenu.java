@@ -36,13 +36,13 @@ public class StationsMenu {
 			List<RadioStation> stations = stationService.getAllStations();
 			String[] stationNames = stations.stream().map(RadioStation::getName).toArray(String[]::new);
 
-			Map<Character, Consumer<Integer>> options = new HashMap<>();
+			Map<String, Consumer<Integer>> options = new HashMap<>();
 
-			options.put('a', (currentSelection) -> runAction(new AddStationAction(), terminal));
-			options.put('d', (currentSelection) -> runAction(new RemoveStationAction(currentSelection), terminal));
-			options.put('e', (currentSelection) -> runAction(new EditStationAction(currentSelection), terminal));
+			options.put("a", (currentSelection) -> runAction(new AddStationAction(), terminal));
+			options.put("d", (currentSelection) -> runAction(new RemoveStationAction(currentSelection), terminal));
+			options.put("e", (currentSelection) -> runAction(new EditStationAction(currentSelection), terminal));
 
-			options.put('p', (currentSelection) -> {
+			options.put("p", (currentSelection) -> {
 				if (currentSelection < stations.size()) {
 					currentPlayingStation = "";
 					RadioStation station = stations.get(currentSelection);
@@ -56,7 +56,7 @@ public class StationsMenu {
 					}
 				}
 			});
-			options.put('b', (currentSelection) -> {
+			options.put("b", (currentSelection) -> {
 				throw new ExitMenuException();
 			});
 
