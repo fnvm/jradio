@@ -1,12 +1,11 @@
 package io.github.fnvm.jradio.ui.menu;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import io.github.fnvm.jradio.core.service.HistoryService;
 import io.github.fnvm.jradio.data.StorageManager;
 import io.github.fnvm.jradio.player.Player;
 import io.github.fnvm.jradio.ui.terminal.MenuController;
@@ -15,23 +14,26 @@ import io.github.fnvm.jradio.ui.terminal.TerminalManager;
 public class MainMenu {
 	private final TerminalManager terminal;
 	private int currentSelection;
-	private Player player;
+    private final Player player;
+    private final HistoryService historyService;
+    private final StorageManager storage;
 
-	public MainMenu(TerminalManager terminal) {
+	public MainMenu(TerminalManager terminal) throws IOException {
 		this.terminal = terminal;
 		currentSelection = 0;
-		player = null;
+        storage = new StorageManager();
+        this.historyService = new HistoryService(storage);
+        this.player = new Player(historyService);
 	}
 
 	public void run() throws IOException {
 
 		// TODO отображение текущего трека
 		// TODO история треков
-		List<String> recentlyPlayedTitles = new StorageManager().loadHistory();
+		
 
-		player = new Player(recentlyPlayedTitles);
 		StationsMenu stationsMenu = new StationsMenu(player);
-		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(recentlyPlayedTitles);
+		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(historyService);
 
 		while (true) {
 			final boolean[] back = { false };

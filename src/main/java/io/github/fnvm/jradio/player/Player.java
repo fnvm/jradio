@@ -3,12 +3,11 @@ package io.github.fnvm.jradio.player;
 import java.io.*;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.github.fnvm.jradio.core.model.RadioStation;
+import io.github.fnvm.jradio.core.service.HistoryService;
 import io.github.fnvm.jradio.data.StorageManager;
 
 public class Player {
@@ -19,15 +18,12 @@ public class Player {
 	private boolean ffplayAvailable;
 	private final Map<String, String> metadata;
 	private volatile String streamTitle = "";
-	private List<String> recentlyPlayed;
+	private final HistoryService historyService;
 
 	private static final Logger LOGGER = System.getLogger(Player.class.getName());
 
-	public Player() {
-		this(new ArrayList<String>());
-	}
 
-	public Player(List<String> recentlyPlayed) {
+	public Player(HistoryService historyService) {
 		ffplayAvailable = true;
 		if (isFfplayInPath()) {
 			ffplayCommand = "ffplay";
@@ -42,7 +38,7 @@ public class Player {
 			}
 		}
 
-		this.recentlyPlayed = recentlyPlayed;
+		this.historyService = historyService;
 		metadata = new ConcurrentHashMap<>();
 		currentStation = new RadioStation("", "");
 	}
@@ -64,16 +60,8 @@ public class Player {
 			process = builder.start();
 			LOGGER.log(Level.INFO, () -> "Playing station: " + station.getName());
 
-			if (recentlyPlayed.size() > 0) {
-				if (!(recentlyPlayed.get(recentlyPlayed.size() - 1).equals(station.getName()))) {
-					recentlyPlayed.add(station.getName());
-					new StorageManager().saveHistory(recentlyPlayed);
-				}
-			} else {
-				recentlyPlayed.add(station.getName());
-				new StorageManager().saveHistory(recentlyPlayed);
 
-			}
+			historyService.add(station.getName());
 
 			new Thread(this::readMetadata).start();
 
