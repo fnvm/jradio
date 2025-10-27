@@ -24,19 +24,22 @@ import io.github.fnvm.jradio.core.model.RadioStation;
 
 public class StorageManager {
 	private static final Path CONFIG_DIR = getConfigDirectory();
-	private static final Path DATA_FILE_PATH = CONFIG_DIR.resolve("data.json");
+	private static final Path DATA_STATIONS = CONFIG_DIR.resolve("data.json");
+	private static final Path HISTORY_DATA = CONFIG_DIR.resolve("history.json");
 
 	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private final TypeToken<List<RadioStation>> collectionType = new TypeToken<List<RadioStation>>() {
 	};
+	private final TypeToken<List<String>> historyColType = new TypeToken<List<String>>() {
+	};
 	private static final Logger LOGGER = System.getLogger(StorageManager.class.getName());
 
 	public List<RadioStation> loadStations() throws IOException {
-		if (!Files.exists(DATA_FILE_PATH)) {
+		if (!Files.exists(DATA_STATIONS)) {
 			return new ArrayList<>();
 		}
 
-		String json = Files.readString(DATA_FILE_PATH);
+		String json = Files.readString(DATA_STATIONS);
 		if (json.isBlank()) {
 			return new ArrayList<>();
 		}
@@ -54,12 +57,44 @@ public class StorageManager {
 		String json = gson.toJson(stations);
 		Files.createDirectories(CONFIG_DIR);
 
-		Files.writeString(DATA_FILE_PATH, json, StandardCharsets.UTF_8, StandardOpenOption.CREATE,
+		Files.writeString(DATA_STATIONS, json, StandardCharsets.UTF_8, StandardOpenOption.CREATE,
 				StandardOpenOption.TRUNCATE_EXISTING);
 	}
 
+	public void saveHistory(List<String> recentlyPlayed) throws IOException {
+		String json = gson.toJson(recentlyPlayed);
+		Files.createDirectories(CONFIG_DIR);
+
+		Files.writeString(HISTORY_DATA, json, StandardCharsets.UTF_8, StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING);
+	}
+
+	public List<String> loadHistory() throws IOException {
+		if (!Files.exists(HISTORY_DATA)) {
+			return new ArrayList<>();
+		}
+
+		String json = Files.readString(HISTORY_DATA);
+		if (json.isBlank()) {
+			return new ArrayList<>();
+		}
+
+		try {
+			List<String> history = gson.fromJson(json, historyColType);
+			return history != null ? history : new ArrayList<>();
+		} catch (JsonSyntaxException e) {
+			LOGGER.log(Level.ERROR, () -> "Failed to parse JSON with playing history");
+			return new ArrayList<>();
+		}
+
+	}
+
+	public void removeHistory() throws IOException {
+		saveHistory(new ArrayList<String>());
+	}
+
 	public static Path getPath() {
-		return DATA_FILE_PATH;
+		return DATA_STATIONS;
 	}
 
 	public File extractFfplay() throws IOException {

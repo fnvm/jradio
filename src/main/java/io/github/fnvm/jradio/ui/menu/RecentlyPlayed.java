@@ -25,13 +25,13 @@ public class RecentlyPlayed {
 		boolean[] back = new boolean[] { false };
 		options.put('b', (c) -> back[0] = true);
 
-		String[] inactiveItems = new String[] { "↩  Back (B)" };
+		String[] inactiveItems = new String[] { "Remove history (D)", "↩  Back (B)" };
 
 		while (true) {
-			String[] titles = recentlyPlayed.stream().toArray(String[]::new);
+			String[] recentlyPlayedTitles = recentlyPlayed.stream().toArray(String[]::new);
 			MenuController resentlyPlayedMenu = new MenuController(terminal, "Recently Played", currentSelection,
 					inactiveItems, options,
-					titles);
+					recentlyPlayedTitles);
 
 			currentSelection = resentlyPlayedMenu.show() - 10_000;
 

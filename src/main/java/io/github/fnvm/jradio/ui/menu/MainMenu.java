@@ -7,27 +7,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import io.github.fnvm.jradio.data.StorageManager;
 import io.github.fnvm.jradio.player.Player;
 import io.github.fnvm.jradio.ui.terminal.MenuController;
 import io.github.fnvm.jradio.ui.terminal.TerminalManager;
 
 public class MainMenu {
 	private final TerminalManager terminal;
-	private Player player;
 	private int currentSelection;
+	private Player player;
 
 	public MainMenu(TerminalManager terminal) {
 		this.terminal = terminal;
-		player = new Player();
 		currentSelection = 0;
+		player = null;
 	}
 
 	public void run() throws IOException {
 
 		// TODO отображение текущего трека
 		// TODO история треков
-		List<String> recentlyPlayedTitles = new ArrayList<>(List.of("Unknown"));
+		List<String> recentlyPlayedTitles = new StorageManager().loadHistory();
 
+		player = new Player(recentlyPlayedTitles);
 		StationsMenu stationsMenu = new StationsMenu(player);
 		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(recentlyPlayedTitles);
 

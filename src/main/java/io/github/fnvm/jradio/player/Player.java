@@ -3,6 +3,8 @@ package io.github.fnvm.jradio.player;
 import java.io.*;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,10 +19,15 @@ public class Player {
 	private boolean ffplayAvailable;
 	private final Map<String, String> metadata;
 	private volatile String streamTitle = "";
+	private List<String> recentlyPlayed;
 
 	private static final Logger LOGGER = System.getLogger(Player.class.getName());
 
 	public Player() {
+		this(new ArrayList<String>());
+	}
+
+	public Player(List<String> recentlyPlayed) {
 		ffplayAvailable = true;
 		if (isFfplayInPath()) {
 			ffplayCommand = "ffplay";
@@ -35,6 +42,7 @@ public class Player {
 			}
 		}
 
+		this.recentlyPlayed = recentlyPlayed;
 		metadata = new ConcurrentHashMap<>();
 		currentStation = new RadioStation("", "");
 	}
@@ -55,6 +63,8 @@ public class Player {
 			builder.redirectErrorStream(true);
 			process = builder.start();
 			LOGGER.log(Level.INFO, () -> "Playing station: " + station.getName());
+			recentlyPlayed.add(station.getName());
+			new StorageManager().saveHistory(recentlyPlayed);
 			new Thread(this::readMetadata).start();
 
 		} catch (IOException e) {
