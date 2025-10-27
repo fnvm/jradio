@@ -1,7 +1,9 @@
 package io.github.fnvm.jradio.ui.menu;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -24,9 +26,10 @@ public class MainMenu {
 
 		// TODO отображение текущего трека
 		// TODO история треков
+		List<String> recentlyPlayedTitles = new ArrayList<>(List.of("Unknown"));
 
 		StationsMenu stationsMenu = new StationsMenu(player);
-		RecentlyPlayed recentlyPlayed = new RecentlyPlayed();
+		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(recentlyPlayedTitles);
 
 		while (true) {
 			final boolean[] back = { false };

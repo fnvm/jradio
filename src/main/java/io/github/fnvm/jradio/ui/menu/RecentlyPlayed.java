@@ -10,8 +10,14 @@ import io.github.fnvm.jradio.ui.terminal.MenuController;
 import io.github.fnvm.jradio.ui.terminal.TerminalManager;
 
 public class RecentlyPlayed {
+	private int currentSelection;
 
 	private List<String> recentlyPlayed;
+
+	public RecentlyPlayed(List<String> recentlyPlayed) {
+		currentSelection = 0;
+		this.recentlyPlayed = recentlyPlayed;
+	}
 
 	public void showRecentlyPlayed(TerminalManager terminal) throws IOException {
 
@@ -19,13 +25,15 @@ public class RecentlyPlayed {
 		boolean[] back = new boolean[] { false };
 		options.put('b', (c) -> back[0] = true);
 
-		String[] inactiveItems = new String[] { "Back (B)" };
+		String[] inactiveItems = new String[] { "↩  Back (B)" };
 
 		while (true) {
-			MenuController resentlyPlayedMenu = new MenuController(terminal, "Recently Played", 0, inactiveItems, options,
-					new String[] { "One", "Two" });
+			String[] titles = recentlyPlayed.stream().toArray(String[]::new);
+			MenuController resentlyPlayedMenu = new MenuController(terminal, "Recently Played", currentSelection,
+					inactiveItems, options,
+					titles);
 
-			int ch = resentlyPlayedMenu.show() - 10_000;
+			currentSelection = resentlyPlayedMenu.show() - 10_000;
 
 			if (back[0] == true)
 				return;
