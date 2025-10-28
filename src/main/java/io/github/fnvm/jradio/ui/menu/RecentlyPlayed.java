@@ -51,6 +51,7 @@ public class RecentlyPlayed {
         while (!back[0]) {
         	List<String> list = new ArrayList<>(historyService.getAll());
         	Collections.reverse(list);
+   
         	String[] items = list.toArray(String[]::new);
             
             MenuController menu = new MenuController(terminal, "Recently Played",

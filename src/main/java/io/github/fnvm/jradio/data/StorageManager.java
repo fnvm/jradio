@@ -62,6 +62,11 @@ public class StorageManager {
 	}
 
 	public void saveHistory(List<String> recentlyPlayed) throws IOException {
+		if (recentlyPlayed.size() > 100) {
+		    recentlyPlayed = new ArrayList<>(
+		        recentlyPlayed.subList(recentlyPlayed.size() - 100, recentlyPlayed.size())
+		    );
+		}
 		String json = gson.toJson(recentlyPlayed);
 		Files.createDirectories(CONFIG_DIR);
 
