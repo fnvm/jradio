@@ -24,15 +24,11 @@ public class MainMenu {
         storage = new StorageManager();
         this.historyService = new HistoryService(storage);
         this.player = new Player(historyService);
-        this.player.setTerminalManager(terminal);
 	}
 
 	public void run() throws IOException {
-
-		// TODO отображение текущего трека
 		// TODO история треков с названием трека
 		
-
 		StationsMenu stationsMenu = new StationsMenu(player);
 		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(historyService);
 

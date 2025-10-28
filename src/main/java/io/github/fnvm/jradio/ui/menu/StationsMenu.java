@@ -61,6 +61,8 @@ public class StationsMenu {
 
 			MenuController stationsMenu = new MenuController(terminal, "Stations List", selection, inactiveItems,
 					options, stationNames);
+			stationsMenu.setPlayer(player);
+			
 
 			try {
 				selection = stationsMenu.show();

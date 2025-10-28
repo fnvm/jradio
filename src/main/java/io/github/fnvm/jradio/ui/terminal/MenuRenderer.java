@@ -3,11 +3,15 @@ package io.github.fnvm.jradio.ui.terminal;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import io.github.fnvm.jradio.player.Player;
+
 public class MenuRenderer {
 	private final TerminalManager terminal;
 	private final String title;
 	private final String[] menuItems;
 	private final String[] inactiveItems;
+	private Player player;
+	private String metadataLine = "";
 
 	public MenuRenderer(TerminalManager terminal, String title, String[] inactiveItems, String[] menuItems) {
 		this.terminal = terminal;
@@ -16,9 +20,31 @@ public class MenuRenderer {
 		this.inactiveItems = inactiveItems;
 	}
 
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public void updateMetadata() {
+		if (player != null && player.isPlaying() && player.getCurrentStation() != null) {
+			String currentStationName = player.getCurrentStation().getName();
+			String streamTitle = player.getStreamTitle();
+
+			metadataLine = "  >> [" + currentStationName + "] " + (streamTitle != null ? streamTitle : "");
+		} else {
+			metadataLine = "";
+		}
+	}
+
 	public void render(int currentSelection) {
+		updateMetadata();
+
 		terminal.clearScreen();
-		terminal.println("=".repeat(16) + " " + title + " " + "=".repeat(16) + System.lineSeparator());
+		terminal.println("=".repeat(16) + " " + title + " " + "=".repeat(16));
+
+		if (!metadataLine.isEmpty()) {
+			terminal.println(System.lineSeparator() + "\u001B[36m" + metadataLine + "\u001B[0m");
+		}
+		terminal.print(System.lineSeparator());
 
 		for (int i = 0; i < Math.max(inactiveItems.length, menuItems.length); i++) {
 			String[] items = buildLine(i);
