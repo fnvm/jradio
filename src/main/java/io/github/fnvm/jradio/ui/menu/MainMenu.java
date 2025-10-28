@@ -63,6 +63,7 @@ public class MainMenu {
 	private void exit() {
 		if (player.isPlaying())
 			player.stop();
+		terminal.clearScreen();
 		System.exit(0);
 	}
 

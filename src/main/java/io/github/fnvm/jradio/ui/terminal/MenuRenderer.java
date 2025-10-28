@@ -13,7 +13,7 @@ public class MenuRenderer {
 	private Player player;
 	private String metadataLine = "";
 
-	private final int metadataRow = 2;
+	private final int metadataRow = 3;
 
 	public MenuRenderer(TerminalManager terminal, String title, String[] inactiveItems, String[] menuItems) {
 		this.terminal = terminal;
@@ -29,7 +29,7 @@ public class MenuRenderer {
 	private void updateMetadata() {
 		if (player != null && player.isPlaying() && player.getCurrentStation() != null) {
 			String st = player.getStreamTitle();
-			metadataLine = "\u001B[36m  >> [" + player.getCurrentStation().getName() + "] " + (st != null ? st : "")
+			metadataLine = "\u001B[36m >> [" + player.getCurrentStation().getName() + "] " + (st != null ? st : "")
 					+ "\u001B[0m";
 		} else {
 			metadataLine = "";
@@ -41,16 +41,16 @@ public class MenuRenderer {
 
 		terminal.clearScreen();
 		terminal.println("=".repeat(16) + " " + title + " " + "=".repeat(16));
+		terminal.print(System.lineSeparator());
 
 		if (!metadataLine.isEmpty()) {
-			terminal.print(System.lineSeparator());
 			terminal.println(metadataLine);
 		} else {
 			terminal.print("");
 		}
-		terminal.print(System.lineSeparator());
 
 		for (int i = 0; i < Math.max(inactiveItems.length, menuItems.length); i++) {
+			if (i == 0) terminal.print(System.lineSeparator());
 			String[] items = buildLine(i);
 
 			if (i == currentSelection)
@@ -74,10 +74,8 @@ public class MenuRenderer {
 		terminal.print("\u001B[K");
 
 		if (!metadataLine.isEmpty()) {
-			terminal.print(System.lineSeparator());
 			terminal.print(metadataLine);
 		}
-		terminal.print(System.lineSeparator());
 
 		terminal.flush();
 	}
