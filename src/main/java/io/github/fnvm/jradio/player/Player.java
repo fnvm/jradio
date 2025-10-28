@@ -142,7 +142,7 @@ public class Player {
 
 			conn.disconnect();
 		} catch (Exception e) {
-			LOGGER.log(Level.ERROR, () -> "Failed to fetch metadata: " + e.getMessage());
+			LOGGER.log(Level.INFO, () -> "Failed to fetch metadata: " + e.getMessage());
 		}
 	}
 
