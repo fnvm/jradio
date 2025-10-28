@@ -24,6 +24,7 @@ public class MainMenu {
         storage = new StorageManager();
         this.historyService = new HistoryService(storage);
         this.player = new Player(historyService);
+        this.player.setTerminalManager(terminal);
 	}
 
 	public void run() throws IOException {
