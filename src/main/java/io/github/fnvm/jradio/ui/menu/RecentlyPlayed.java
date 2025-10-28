@@ -9,17 +9,19 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.fnvm.jradio.core.service.HistoryService;
+import io.github.fnvm.jradio.player.Player;
 import io.github.fnvm.jradio.ui.terminal.MenuController;
 import io.github.fnvm.jradio.ui.terminal.TerminalManager;
 
 public class RecentlyPlayed {
 	private int currentSelection;
-
+	private Player player;
 	private HistoryService historyService;
 
-	public RecentlyPlayed(HistoryService historyService) {
+	public RecentlyPlayed(HistoryService historyService, Player player) {
 		currentSelection = 0;
 		this.historyService = historyService;
+		this.player = player;
 	}
 
 	public void showRecentlyPlayed(TerminalManager terminal) throws IOException {
@@ -40,6 +42,7 @@ public class RecentlyPlayed {
                 new String[]{"Clear history (D)", "", "↩ Back (B)"},
                 options,
                 items);
+            menu.setPlayer(player);
 
             currentSelection = menu.show() - 10_000;
         }

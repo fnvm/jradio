@@ -30,7 +30,7 @@ public class MainMenu {
 		// TODO история треков с названием трека
 		
 		StationsMenu stationsMenu = new StationsMenu(player);
-		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(historyService);
+		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(historyService, player);
 
 		while (true) {
 			final boolean[] back = { false };
@@ -39,6 +39,7 @@ public class MainMenu {
 
 			MenuController mainMenu = new MenuController(terminal, "Jradio", currentSelection, new String[] {}, hotkeys,
 					new String[] { "All Stations", "Recently Played", "Exit" });
+			mainMenu.setPlayer(player);
 
 			currentSelection = mainMenu.show() - 10_000;
 

@@ -75,7 +75,7 @@ public class MenuController {
 	}
 
 	private void startMetadataUpdater() {
-		if (player == null) return;
+		if (Objects.isNull(player)) return;
 		
 		running = true;
 		metadataUpdateThread = new Thread(() -> {
