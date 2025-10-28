@@ -35,21 +35,28 @@ public class MainMenu {
 			final boolean[] back = { false };
 			Map<String, Consumer<Integer>> hotkeys = new HashMap<>();
 			hotkeys.put("b", (c) -> back[0] = true);
+			hotkeys.put("p", (c) -> {
+				if (player.isPlaying())
+					player.stop();
+			});
 
 			MenuController mainMenu = new MenuController(terminal, "Jradio", currentSelection, new String[] {}, hotkeys,
 					new String[] { "All Stations", "Recently Played", "Exit" });
 			mainMenu.setPlayer(player);
 
-			currentSelection = mainMenu.show() - 10_000;
+			int temp = mainMenu.show();
 
 			if (back[0] == true)
 				exit();
-			switch (currentSelection) {
+			switch (temp) {
 			case -1 -> exit();
-			case 0 -> stationsMenu.showStationsMenu(terminal);
-			case 1 -> recentlyPlayed.showRecentlyPlayed(terminal);
-			case 2 -> exit();
+			case 10_000 -> stationsMenu.showStationsMenu(terminal);
+			case 10_001 -> recentlyPlayed.showRecentlyPlayed(terminal);
+			case 10_002 -> exit();
 			}
+
+			currentSelection = (temp >= 10_000 ? temp - 10_000 : temp);
+
 		}
 	}
 
