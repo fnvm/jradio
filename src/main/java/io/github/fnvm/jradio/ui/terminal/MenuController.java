@@ -17,6 +17,7 @@ public class MenuController {
 	private final String[] menuItems;
 	private final KeyMap<String> keyMap;
 	private Player player;
+	private volatile boolean suspendMetadataUpdates = false;
 
 	private int currentSelection;
 	private volatile boolean running = false;
@@ -51,56 +52,35 @@ public class MenuController {
 			while (true) {
 				String key = terminal.getBindingReader().readBinding(keyMap, null, true);
 
-				if (Objects.isNull(key))
+				if (key == null)
 					continue;
 
 				switch (key) {
-				case "up" -> moveUp();
-				case "down" -> moveDown();
-				case "enter" -> {
-					return currentSelection + 10_000;
-				}
-				default -> {
-					boolean handled = handleHotkey(key);
-					if (handled) {
+					case "up" -> {
+						moveUp();
 						renderer.render(currentSelection);
-						return currentSelection;
 					}
-				}
+					case "down" -> {
+						moveDown();
+						renderer.render(currentSelection);
+					}
+					case "enter" -> {
+						return currentSelection + 10_000;
+					}
+					default -> {
+						boolean handled = handleHotkey(key);
+						if (handled) {
+							renderer.render(currentSelection);
+							return currentSelection;
+						}
+					}
 				}
 			}
 		} finally {
-			stopMetadataUpdater();
+			stopMetadataUpdater(); 
 		}
 	}
 
-	private void startMetadataUpdater() {
-		if (Objects.isNull(player)) return;
-		
-		running = true;
-		metadataUpdateThread = new Thread(() -> {
-			while (running) {
-				try {
-					Thread.sleep(1000); 
-					if (running) {
-						renderer.render(currentSelection);
-					}
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-					break;
-				}
-			}
-		});
-		metadataUpdateThread.setDaemon(true);
-		metadataUpdateThread.start();
-	}
-
-	private void stopMetadataUpdater() {
-		running = false;
-		if (metadataUpdateThread != null) {
-			metadataUpdateThread.interrupt();
-		}
-	}
 
 	private void moveUp() {
 		if (currentSelection > 0) {
@@ -115,6 +95,10 @@ public class MenuController {
 			renderer.render(currentSelection);
 		}
 	}
+	
+	public void setSuspendMetadataUpdates(boolean suspend) {
+	    this.suspendMetadataUpdates = suspend;
+	}
 
 	private boolean handleHotkey(String key) {
 		if (!key.isBlank()) {
@@ -126,6 +110,35 @@ public class MenuController {
 			}
 		}
 		return false;
+	}
+	
+	private void startMetadataUpdater() {
+		if (player == null) return;
+
+		running = true;
+
+		metadataUpdateThread = new Thread(() -> {
+		    while (running) {
+		        try {
+		            Thread.sleep(100);
+		            if (!suspendMetadataUpdates) {
+		                renderer.refreshMetadataLine();
+		            }
+		        } catch (InterruptedException ignored) {
+		            break;
+		        }
+		    }
+		});
+		
+		metadataUpdateThread.setDaemon(true);
+		metadataUpdateThread.start();
+	}
+
+	private void stopMetadataUpdater() {
+		running = false;
+		if (metadataUpdateThread != null) {
+			metadataUpdateThread.interrupt();
+		}
 	}
 
 	private KeyMap<String> buildKeyMap() {

@@ -6,87 +6,97 @@ import java.util.Comparator;
 import io.github.fnvm.jradio.player.Player;
 
 public class MenuRenderer {
-	private final TerminalManager terminal;
-	private final String title;
-	private final String[] menuItems;
-	private final String[] inactiveItems;
-	private Player player;
-	private String metadataLine = "";
+    private final TerminalManager terminal;
+    private final String title;
+    private final String[] menuItems;
+    private final String[] inactiveItems;
+    private Player player;
+    private String metadataLine = "";
 
-	public MenuRenderer(TerminalManager terminal, String title, String[] inactiveItems, String[] menuItems) {
-		this.terminal = terminal;
-		this.title = title;
-		this.menuItems = menuItems;
-		this.inactiveItems = inactiveItems;
-	}
+    private final int metadataRow = 2;
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
+    public MenuRenderer(TerminalManager terminal, String title, String[] inactiveItems, String[] menuItems) {
+        this.terminal = terminal;
+        this.title = title;
+        this.menuItems = menuItems;
+        this.inactiveItems = inactiveItems;
+    }
 
-	public void updateMetadata() {
-		if (player != null && player.isPlaying() && player.getCurrentStation() != null) {
-			String currentStationName = player.getCurrentStation().getName();
-			String streamTitle = player.getStreamTitle();
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
-			metadataLine = "  >> [" + currentStationName + "] " + (streamTitle != null ? streamTitle : "");
-		} else {
-			metadataLine = "";
-		}
-	}
+    private void updateMetadata() {
+        if (player != null && player.isPlaying() && player.getCurrentStation() != null) {
+            String st = player.getStreamTitle();
+            metadataLine = "\u001B[36m  >> [" + player.getCurrentStation().getName() + "] "
+                    + (st != null ? st : "") + "\u001B[0m";
+        } else {
+            metadataLine = "";
+        }
+    }
 
-	public void render(int currentSelection) {
-		updateMetadata();
+    public void render(int currentSelection) {
+        updateMetadata();
 
-		terminal.clearScreen();
-		terminal.println("=".repeat(16) + " " + title + " " + "=".repeat(16));
+        terminal.clearScreen();
+        terminal.println("=".repeat(16) + " " + title + " " + "=".repeat(16));
 
-		if (!metadataLine.isEmpty()) {
-			terminal.println(System.lineSeparator() + "\u001B[36m" + metadataLine + "\u001B[0m");
-		}
-		terminal.print(System.lineSeparator());
+        if (!metadataLine.isEmpty()) {
+            terminal.println(metadataLine);
+        } else {
+            terminal.print("");
+        }
+        terminal.print(System.lineSeparator());
 
-		for (int i = 0; i < Math.max(inactiveItems.length, menuItems.length); i++) {
-			String[] items = buildLine(i);
-			if (i == currentSelection) {
-				terminal.print("\u001B[1;32m> ");
-			} else {
-				terminal.print("  \u001B[0m");
-			}
-			terminal.print(items[0]);
-			terminal.print("\u001B[0m");
-			terminal.print("\u001B[90m");
-			terminal.print(items[1]);
-			terminal.println("\u001B[0m");
-		}
+        for (int i = 0; i < Math.max(inactiveItems.length, menuItems.length); i++) {
+            String[] items = buildLine(i);
 
-		terminal.print("\u001B[0m");
-		terminal.flush();
-	}
+            if (i == currentSelection) terminal.print("\u001B[1;32m> ");
+            else terminal.print("  ");
 
-	private String[] buildLine(int i) {
-		String longest = Arrays.stream(menuItems).max(Comparator.comparingInt(String::length)).orElse(" ".repeat(11));
+            terminal.print(items[0]);
+            terminal.print("\u001B[0m\u001B[90m");
+            terminal.println(items[1] + "\u001B[0m");
+        }
 
-		String[] r = new String[2];
-		int lineSize = (longest.length() > 11) ? longest.length() + 5 : 16;
+        terminal.flush();
+    }
 
-		if (i < inactiveItems.length && i < menuItems.length) {
-			int ost = lineSize - menuItems[i].length();
-			r[0] = menuItems[i] + " ".repeat(ost);
-			r[1] = inactiveItems[i];
-			return r;
-		} else if (i < inactiveItems.length) {
-			r[0] = " ".repeat(lineSize);
-			r[1] = inactiveItems[i];
-			return r;
-		} else if (i < menuItems.length) {
-			r[0] = menuItems[i];
-			r[1] = "";
-			return r;
-		}
 
-		r[0] = "";
-		r[1] = "";
-		return r;
-	}
+    public void refreshMetadataLine() {
+        updateMetadata();
+
+
+        terminal.print("\u001B[" + metadataRow + ";1H");
+
+        terminal.print("\u001B[K");
+
+        if (!metadataLine.isEmpty()) {
+            terminal.print(metadataLine);
+        }
+
+        terminal.flush();
+    }
+
+    private String[] buildLine(int i) {
+        String longest = Arrays.stream(menuItems).max(Comparator.comparingInt(String::length)).orElse(" ".repeat(11));
+        int lineSize = Math.max(longest.length() + 5, 16);
+
+        String[] res = new String[2];
+        if (i < inactiveItems.length && i < menuItems.length) {
+            res[0] = menuItems[i] + " ".repeat(lineSize - menuItems[i].length());
+            res[1] = inactiveItems[i];
+        } else if (i < inactiveItems.length) {
+            res[0] = " ".repeat(lineSize);
+            res[1] = inactiveItems[i];
+        } else if (i < menuItems.length) {
+            res[0] = menuItems[i];
+            res[1] = "";
+        } else {
+            res[0] = "";
+            res[1] = "";
+        }
+        return res;
+    }
 }

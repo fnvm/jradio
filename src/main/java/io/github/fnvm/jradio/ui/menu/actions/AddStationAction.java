@@ -13,18 +13,18 @@ public class AddStationAction implements MenuAction {
 	@Override
 	public void execute(TerminalManager terminal, RadioStationsService service) throws IOException {
 		terminal.clearScreen();
-		System.out.println("=".repeat(16) + " Add new station " + "=".repeat(16));
-		System.out.print("Name: ");
-		String name = InputReader.readUserInput(terminal);
+		terminal.println("=".repeat(16) + " Add new station " + "=".repeat(16));
+
+		String name = InputReader.readUserInput(terminal, "Name: ");
 		if (Objects.isNull(name))
 			return;
 		if (name.isBlank())
 			name = "Unknown";
 
-		System.out.print("URL: ");
-		String url = InputReader.readUserInput(terminal);
+		String url = InputReader.readUserInput(terminal, "URL: ");
 		if (Objects.isNull(url) || url.isBlank())
 			return;
+
 		service.addStation(new RadioStation(name.trim(), url.trim()));
 	}
 

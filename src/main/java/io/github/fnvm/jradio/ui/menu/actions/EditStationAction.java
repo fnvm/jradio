@@ -65,7 +65,7 @@ public final class EditStationAction implements MenuAction {
 	private RadioStation editName(RadioStation currentStation, RadioStationsService service, TerminalManager terminal)
 			throws IOException {
 		terminal.clearScreen();
-		String name = InputReader.readUserInput(terminal);
+		String name = InputReader.readUserInput(terminal, "New name: ");
 		if (Objects.isNull(name))
 			return currentStation;
 
@@ -77,7 +77,7 @@ public final class EditStationAction implements MenuAction {
 	private RadioStation editUrl(RadioStation currentStation, RadioStationsService service, TerminalManager terminal)
 			throws IOException {
 		terminal.clearScreen();
-		String url = InputReader.readUserInput(terminal);
+		String url = InputReader.readUserInput(terminal, "New URL: ");
 		if (Objects.isNull(url))
 			return currentStation;
 
@@ -89,7 +89,7 @@ public final class EditStationAction implements MenuAction {
 	private RadioStation editNote(RadioStation currentStation, RadioStationsService service, TerminalManager terminal)
 			throws IOException {
 		terminal.clearScreen();
-		String note = InputReader.readUserInput(terminal);
+		String note = InputReader.readUserInput(terminal, "Note: ");
 		if (Objects.isNull(note))
 			return currentStation;
 

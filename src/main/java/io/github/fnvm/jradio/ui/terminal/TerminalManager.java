@@ -37,6 +37,23 @@ public class TerminalManager implements AutoCloseable {
 		terminal.puts(Capability.clear_screen);
 		flush();
 	}
+	
+	public void cursorHome() {
+	    terminal.puts(Capability.cursor_address, 0, 0);
+	    flush();
+	}
+
+	public void cursorDown(int lines) {
+	    for (int i = 0; i < lines; i++) {
+	        terminal.puts(Capability.cursor_down);
+	    }
+	    flush();
+	}
+
+	public void eraseLine() {
+	    terminal.puts(Capability.clr_eol);
+	    flush();
+	}
 
 	public void print(String text) {
 		terminal.writer().print(text);

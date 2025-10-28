@@ -20,6 +20,7 @@ public class StationsMenu {
 	private final RadioStationsService stationService;
 	private final Player player;
 	private int selection;
+	private MenuController stationsMenu;
 
 
 	private static final Logger LOGGER = System.getLogger(StationsMenu.class.getName());
@@ -59,7 +60,7 @@ public class StationsMenu {
 			String[] inactiveItems = new String[] { "Play / Pause (P)", "Add Station (A)", "Remove Station (D)",
 					"Edit Station (E)", "", "↩  Back (B)", "" };
 
-			MenuController stationsMenu = new MenuController(terminal, "Stations List", selection, inactiveItems,
+			stationsMenu = new MenuController(terminal, "Stations List", selection, inactiveItems,
 					options, stationNames);
 			stationsMenu.setPlayer(player);
 			
@@ -78,7 +79,9 @@ public class StationsMenu {
 
 	private void runAction(MenuAction action, TerminalManager terminal) {
 		try {
+			stationsMenu.setSuspendMetadataUpdates(true);
 			action.execute(terminal, stationService);
+			stationsMenu.setSuspendMetadataUpdates(false);
 		} catch (IOException e) {
 			LOGGER.log(Level.ERROR, () -> "Failed action " + action.getClass().getName() + " " + e.getMessage());
 		}

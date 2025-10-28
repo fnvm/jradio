@@ -14,21 +14,20 @@ import io.github.fnvm.jradio.ui.terminal.TerminalManager;
 public class MainMenu {
 	private final TerminalManager terminal;
 	private int currentSelection;
-    private final Player player;
-    private final HistoryService historyService;
-    private final StorageManager storage;
+	private final Player player;
+	private final HistoryService historyService;
+	private final StorageManager storage;
 
 	public MainMenu(TerminalManager terminal) throws IOException {
 		this.terminal = terminal;
 		currentSelection = 0;
-        storage = new StorageManager();
-        this.historyService = new HistoryService(storage);
-        this.player = new Player(historyService);
+		storage = new StorageManager();
+		this.historyService = new HistoryService(storage);
+		this.player = new Player(historyService);
 	}
 
 	public void run() throws IOException {
-		// TODO история треков с названием трека
-		
+
 		StationsMenu stationsMenu = new StationsMenu(player);
 		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(historyService, player);
 
@@ -46,10 +45,10 @@ public class MainMenu {
 			if (back[0] == true)
 				exit();
 			switch (currentSelection) {
-				case -1 -> exit();
-				case 0 -> stationsMenu.showStationsMenu(terminal);
-				case 1 -> recentlyPlayed.showRecentlyPlayed(terminal);
-				case 2 -> exit();
+			case -1 -> exit();
+			case 0 -> stationsMenu.showStationsMenu(terminal);
+			case 1 -> recentlyPlayed.showRecentlyPlayed(terminal);
+			case 2 -> exit();
 			}
 		}
 	}
