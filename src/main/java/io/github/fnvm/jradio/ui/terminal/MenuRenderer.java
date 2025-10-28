@@ -77,6 +77,7 @@ public class MenuRenderer {
 			terminal.print(System.lineSeparator());
 			terminal.print(metadataLine);
 		}
+		terminal.print(System.lineSeparator());
 
 		terminal.flush();
 	}
