@@ -2,7 +2,6 @@ package io.github.fnvm.jradio.ui.menu;
 
 import java.awt.Desktop;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.net.URI;
@@ -17,7 +16,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.fnvm.jradio.core.service.HistoryService;
-import io.github.fnvm.jradio.data.StorageManager;
 import io.github.fnvm.jradio.player.Player;
 import io.github.fnvm.jradio.ui.terminal.MenuController;
 import io.github.fnvm.jradio.ui.terminal.TerminalManager;
