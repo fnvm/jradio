@@ -18,6 +18,7 @@ public class MenuController {
 	private Player player;
 	private volatile boolean suspendMetadataUpdates = false;
 
+	private int currentPageSelection;
 	private int currentSelection;
 	private volatile boolean running = false;
 	private Thread metadataUpdateThread;
@@ -34,7 +35,7 @@ public class MenuController {
 		this.menuItems = menuItems;
 		this.currentSelection = currentSelection;
 		this.hotkeys = hotkeys;
-
+		this.currentPageSelection = 1;
 		this.keyMap = buildKeyMap();
 	}
 
@@ -76,10 +77,9 @@ public class MenuController {
 				}
 			}
 		} finally {
-			stopMetadataUpdater(); 
+			stopMetadataUpdater();
 		}
 	}
-
 
 	private void moveUp() {
 		if (currentSelection > 0) {
@@ -94,9 +94,9 @@ public class MenuController {
 			renderer.render(currentSelection);
 		}
 	}
-	
+
 	public void setSuspendMetadataUpdates(boolean suspend) {
-	    this.suspendMetadataUpdates = suspend;
+		this.suspendMetadataUpdates = suspend;
 	}
 
 	private boolean handleHotkey(String key) {
@@ -110,25 +110,26 @@ public class MenuController {
 		}
 		return false;
 	}
-	
+
 	private void startMetadataUpdater() {
-		if (player == null) return;
+		if (player == null)
+			return;
 
 		running = true;
 
 		metadataUpdateThread = new Thread(() -> {
-		    while (running) {
-		        try {
-		            Thread.sleep(100);
-		            if (!suspendMetadataUpdates) {
-		                renderer.refreshMetadataLine();
-		            }
-		        } catch (InterruptedException ignored) {
-		            break;
-		        }
-		    }
+			while (running) {
+				try {
+					Thread.sleep(100);
+					if (!suspendMetadataUpdates) {
+						renderer.refreshMetadataLine();
+					}
+				} catch (InterruptedException ignored) {
+					break;
+				}
+			}
 		});
-		
+
 		metadataUpdateThread.setDaemon(true);
 		metadataUpdateThread.start();
 	}
