@@ -107,18 +107,30 @@ public class StorageManager {
 
 		String resourcePath;
 		if (os.contains("win")) {
-			resourcePath = "/ffmpeg/windows/ffplay.exe";
-		} else if (os.contains("linux")) {
-			resourcePath = "/ffmpeg/linux/ffplay";
+			resourcePath = "/ffmpeg/ffplay.exe";
 		} else {
-			throw new FileNotFoundException("Binary for your system not found");
+			resourcePath = "/ffmpeg/ffplay";
 		}
 
-		InputStream in = getClass().getResourceAsStream(resourcePath);
 		Path targetPath = CONFIG_DIR.resolve(resourcePath.substring(resourcePath.lastIndexOf('/') + 1));
 
-		Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
-		in.close();
+		if (Files.exists(targetPath)) {
+			File existingFile = targetPath.toFile();
+			
+			if (!os.contains("win") && !existingFile.canExecute()) {
+				existingFile.setExecutable(true);
+			}
+			
+			return existingFile;
+		}
+
+		try (InputStream in = getClass().getResourceAsStream(resourcePath)) {
+			if (in == null) {
+				throw new IOException("Resource not found: " + resourcePath);
+			}
+			
+			Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
+		}
 
 		if (!os.contains("win")) {
 			targetPath.toFile().setExecutable(true);

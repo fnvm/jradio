@@ -51,7 +51,7 @@ public class Player {
 		String url = station.getUrl();
 
 		if (!ffplayAvailable) {
-			LOGGER.log(Level.ERROR, () -> "Ffplay not found");
+			LOGGER.log(Level.ERROR, () -> "ffplay not found. Please add ffplay to your PATH and restart the program.");
 			return;
 		}
 
