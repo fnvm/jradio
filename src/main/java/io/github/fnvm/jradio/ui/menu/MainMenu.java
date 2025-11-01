@@ -3,6 +3,7 @@ package io.github.fnvm.jradio.ui.menu;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import io.github.fnvm.jradio.core.service.HistoryService;
@@ -67,6 +68,12 @@ public class MainMenu {
             player.stop();
         terminal.clearScreen();
         running = false; 
+    }
+    
+    public void cleanup() {
+        if (!Objects.isNull(player) && player.isPlaying()) {
+            player.stop();
+        }
     }
 
 }
