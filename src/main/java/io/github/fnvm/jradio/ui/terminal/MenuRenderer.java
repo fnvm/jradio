@@ -89,7 +89,7 @@ public class MenuRenderer {
 		}
 
 		if (totalPages > 1) {
-			terminal.print(System.lineSeparator() + "[" + currentPageSelection + " / " + totalPages + "]");
+			terminal.print(System.lineSeparator() + "  [" + currentPageSelection + " / " + totalPages + "]");
 		}
 
 		terminal.flush();

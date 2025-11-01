@@ -50,10 +50,6 @@ public class RecentlyPlayed {
 			List<String> list = new ArrayList<>(historyService.getAll());
 			Collections.reverse(list);
 
-			if (list.size() > 12) {
-				list = new ArrayList<>(list.subList(0, 12));
-			}
-
 			String[] items = list.toArray(String[]::new);
 
 			MenuController menu = new MenuController(terminal, "Recently Played",

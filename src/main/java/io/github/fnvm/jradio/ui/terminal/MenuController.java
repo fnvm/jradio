@@ -117,7 +117,7 @@ public class MenuController {
 	private void moveLeft() {
 		if (currentPageSelection > 1) {
 			currentPageSelection--;
-			currentSelection = getItemsOnCurrentPage() - 1;
+			currentSelection = 0;
 		}
 	}
 	
