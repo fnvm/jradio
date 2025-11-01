@@ -10,10 +10,9 @@ A simple console radio written in Java
 
 ---
 
-During the build, the project expects the `ffplay` binary to be present in one of the following directories:
+During the build, the project expects the `ffplay` binary in:
 
-- For Windows: `src/main/resources/ffmpeg/windows/`
-- For Linux: `src/main/resources/ffmpeg/linux/`
+- `src/main/resources/ffmpeg/`
 
 You can either include the FFmpeg binaries for your operating system in the appropriate directory, or simply install FFmpeg on your system and make sure that `ffplay` is available in `PATH`.
 
