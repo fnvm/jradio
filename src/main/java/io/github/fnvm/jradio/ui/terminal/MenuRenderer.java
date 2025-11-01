@@ -15,16 +15,16 @@ public class MenuRenderer {
 	private Player player;
 	private String metadataLine = "";
 	private List<List<String>> pagesContent;
-	private int currentPageSelection = 1;
 
 	private final int metadataRow = 3;
+	private static final int ITEMS_PER_PAGE = 15;
 
 	public MenuRenderer(TerminalManager terminal, String title, String[] inactiveItems, String[] menuItems) {
 		this.terminal = terminal;
 		this.title = title;
 		this.menuItems = menuItems;
 		this.inactiveItems = inactiveItems;
-		this.pagesContent = new ArrayList<List<String>>();
+		this.pagesContent = new ArrayList<>();
 	}
 
 	public void setPlayer(Player player) {
@@ -41,11 +41,7 @@ public class MenuRenderer {
 		}
 	}
 
-	public void setPage(int currentPageSelection) {
-		this.currentPageSelection = currentPageSelection;
-	}
-
-	public void render(int currentSelection) {
+	public void render(int currentSelection, int currentPageSelection) {
 		updateMetadata();
 
 		terminal.clearScreen();
@@ -58,15 +54,19 @@ public class MenuRenderer {
 			terminal.print("");
 		}
 
-		int pages = 1;
-		if (menuItems.length > 15) {
-			pages = (int) Math.ceil((double) menuItems.length / 15);
-			for (int i = 0; i < pages; i++) {
-				List<String> currentPage = Arrays.asList(menuItems);
-				currentPage = currentPage.subList(i * 15, (i + 1) * 15 - 1);
+		pagesContent.clear();
+
+		int totalPages = 1;
+		if (menuItems.length > ITEMS_PER_PAGE) {
+			totalPages = (int) Math.ceil((double) menuItems.length / ITEMS_PER_PAGE);
+
+			for (int i = 0; i < totalPages; i++) {
+				int fromIndex = i * ITEMS_PER_PAGE;
+				int toIndex = Math.min((i + 1) * ITEMS_PER_PAGE, menuItems.length);
+
+				List<String> currentPage = Arrays.asList(menuItems).subList(fromIndex, toIndex);
 				pagesContent.add(currentPage);
 			}
-
 		} else {
 			pagesContent.add(Arrays.asList(menuItems));
 		}
@@ -88,6 +88,10 @@ public class MenuRenderer {
 			terminal.println(items[1] + "\u001B[0m");
 		}
 
+		if (totalPages > 1) {
+			terminal.print(System.lineSeparator() + "[" + currentPageSelection + " / " + totalPages + "]");
+		}
+
 		terminal.flush();
 	}
 
@@ -95,7 +99,6 @@ public class MenuRenderer {
 		updateMetadata();
 
 		terminal.print("\u001B[" + metadataRow + ";1H");
-
 		terminal.print("\u001B[K");
 
 		if (!metadataLine.isEmpty()) {
@@ -106,7 +109,8 @@ public class MenuRenderer {
 	}
 
 	private String[] buildLine(int i, List<String> currentPageMenuItems) {
-		String longest = currentPageMenuItems.stream().max(Comparator.comparingInt(String::length)).orElse(" ".repeat(11));
+		String longest = currentPageMenuItems.stream().max(Comparator.comparingInt(String::length))
+				.orElse(" ".repeat(11));
 		int lineSize = Math.max(longest.length() + 5, 16);
 
 		String[] res = new String[2];
