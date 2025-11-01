@@ -50,7 +50,6 @@ public class MenuController {
 	public int[] show() {
 		startMetadataUpdater();
 		
-		// Валидация перед первым рендером
 		validateSelection();
 		renderer.render(currentSelection, currentPageSelection);
 

@@ -18,8 +18,10 @@ public class InputReader {
         String r = null;
         try {
             r = lr.readLine(prompt); 
-        } catch (UserInterruptException e) {
+        } catch (UserInterruptException e) { 
+        	// TODO exit on esc
             LOGGER.log(Level.ERROR, () -> "User Interrupt Exception: " + e.getMessage());
+            return null;
         }
         return r;
     }

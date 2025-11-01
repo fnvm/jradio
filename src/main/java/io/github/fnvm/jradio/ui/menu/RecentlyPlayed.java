@@ -82,12 +82,19 @@ public class RecentlyPlayed {
 		try {
 			String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
 			String url = "https://www.youtube.com/results?search_query=" + encodedQuery;
+			
+			String os = System.getProperty("os.name").toLowerCase();
 
-			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-				Desktop.getDesktop().browse(new URI(url));
-			} else {
-				LOGGER.log(Level.ERROR, () -> "Browser not supported");
+			if (os.contains("win")) {
+				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+					Desktop.getDesktop().browse(new URI(url));
+				} else {
+					LOGGER.log(Level.ERROR, () -> "Browser not supported");
+				}
+			} else if (os.contains("linux")) {
+				new ProcessBuilder("xdg-open", url).start();
 			}
+
 
 		} catch (IOException | URISyntaxException e) {
 			LOGGER.log(Level.ERROR, () -> "Unsupported Encoding Exception: " + e.getMessage());
