@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import io.github.fnvm.jradio.App;
 import io.github.fnvm.jradio.core.model.RadioStation;
 import io.github.fnvm.jradio.core.service.RadioStationsService;
 import io.github.fnvm.jradio.player.Player;
@@ -22,7 +23,7 @@ public class StationsMenu {
 	private int selection;
 	private int pageSelection;
 	private MenuController stationsMenu;
-
+	private String heartSymbol;
 
 	private static final Logger LOGGER = System.getLogger(StationsMenu.class.getName());
 
@@ -31,12 +32,16 @@ public class StationsMenu {
 		this.player = player;
 		selection = 0;
 		pageSelection = 1;
+		heartSymbol = App.OS.contains("windows") ? " ♥" : " ⭐";
 	}
 
 	public void showStationsMenu(TerminalManager terminal) throws IOException {
 		while (true) {
 			List<RadioStation> stations = stationService.getAllStations();
-			String[] stationNames = stations.stream().map(RadioStation::getName).toArray(String[]::new);
+
+			String[] stationNames = stations.stream().map((station) -> {
+				return station.getName() + (station.isFavorite() ? heartSymbol : "");
+			}).toArray(String[]::new);
 
 			Map<String, Consumer<Integer>> options = new HashMap<>();
 
@@ -60,18 +65,17 @@ public class StationsMenu {
 			});
 
 			String[] inactiveItems = new String[] { "Play / Pause (P)", "Add Station (A)", "Remove Station (D)",
-					"Edit Station (E)", "", "↩  Back (B)", "" };
+					"Edit Station (E)", "", "← Back (B)", "" };
 
 			stationsMenu = new MenuController(terminal, "Stations List", selection, pageSelection, inactiveItems,
 					options, stationNames);
 			stationsMenu.setPlayer(player);
-			
 
 			try {
 				int[] groupSel = stationsMenu.show();
-				pageSelection = groupSel[1];	
+				pageSelection = groupSel[1];
 				int globalInd = groupSel[0];
-				
+
 				if (globalInd >= 10_000) {
 					globalInd -= 10_000;
 					new EditStationAction(globalInd).execute(terminal, stationService);

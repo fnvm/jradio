@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import io.github.fnvm.jradio.App;
 import io.github.fnvm.jradio.core.service.HistoryService;
 import io.github.fnvm.jradio.player.Player;
 import io.github.fnvm.jradio.ui.terminal.MenuController;
@@ -56,7 +57,7 @@ public class RecentlyPlayed {
 			MenuController menu = new MenuController(terminal, "Recently Played",
 					currentSelection,
 					currentPageSelection,
-					new String[] { "Clear history (D)", "", "↩  Back (B)", "" },
+					new String[] { "Clear history (D)", "", "←  Back (B)", "" },
 					options,
 					items);
 			menu.setPlayer(player);
@@ -82,16 +83,14 @@ public class RecentlyPlayed {
 		try {
 			String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
 			String url = "https://www.youtube.com/results?search_query=" + encodedQuery;
-			
-			String os = System.getProperty("os.name").toLowerCase();
 
-			if (os.contains("win")) {
+			if (App.OS.contains("win")) {
 				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
 					Desktop.getDesktop().browse(new URI(url));
 				} else {
 					LOGGER.log(Level.ERROR, () -> "Browser not supported");
 				}
-			} else if (os.contains("linux")) {
+			} else if (App.OS.contains("linux")) {
 				new ProcessBuilder("xdg-open", url).start();
 			}
 

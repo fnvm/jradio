@@ -1,7 +1,6 @@
 package io.github.fnvm.jradio.data;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.System.Logger;
@@ -20,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import io.github.fnvm.jradio.App;
 import io.github.fnvm.jradio.core.model.RadioStation;
 
 public class StorageManager {
@@ -63,9 +63,8 @@ public class StorageManager {
 
 	public void saveHistory(List<String> recentlyPlayed) throws IOException {
 		if (recentlyPlayed.size() > 100) {
-		    recentlyPlayed = new ArrayList<>(
-		        recentlyPlayed.subList(recentlyPlayed.size() - 100, recentlyPlayed.size())
-		    );
+			recentlyPlayed = new ArrayList<>(
+					recentlyPlayed.subList(recentlyPlayed.size() - 100, recentlyPlayed.size()));
 		}
 		String json = gson.toJson(recentlyPlayed);
 		Files.createDirectories(CONFIG_DIR);
@@ -103,10 +102,8 @@ public class StorageManager {
 	}
 
 	public File extractFfplay() throws IOException {
-		String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
-
 		String resourcePath;
-		if (os.contains("win")) {
+		if (App.OS.contains("win")) {
 			resourcePath = "/ffmpeg/ffplay.exe";
 		} else {
 			resourcePath = "/ffmpeg/ffplay";
@@ -116,11 +113,11 @@ public class StorageManager {
 
 		if (Files.exists(targetPath)) {
 			File existingFile = targetPath.toFile();
-			
-			if (!os.contains("win") && !existingFile.canExecute()) {
+
+			if (!App.OS.contains("win") && !existingFile.canExecute()) {
 				existingFile.setExecutable(true);
 			}
-			
+
 			return existingFile;
 		}
 
@@ -128,11 +125,11 @@ public class StorageManager {
 			if (in == null) {
 				throw new IOException("Resource not found: " + resourcePath);
 			}
-			
+
 			Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
 		}
 
-		if (!os.contains("win")) {
+		if (!App.OS.contains("win")) {
 			targetPath.toFile().setExecutable(true);
 		}
 
@@ -140,9 +137,8 @@ public class StorageManager {
 	}
 
 	private static Path getConfigDirectory() {
-		String os = System.getProperty("os.name").toLowerCase();
 
-		if (os.contains("win")) {
+		if (App.OS.contains("win")) {
 			return Path.of(System.getenv("APPDATA"), "jradio");
 		} else {
 			return Path.of(System.getProperty("user.home"), ".config", "jradio");

@@ -3,7 +3,6 @@ package io.github.fnvm.jradio.ui.terminal;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.lang.Math;
 import io.github.fnvm.jradio.player.Player;
 
@@ -33,7 +32,7 @@ public class MenuRenderer {
 	private void updateMetadata() {
 		if (player != null && player.isPlaying() && player.getCurrentStation() != null) {
 			String st = player.getStreamTitle();
-			metadataLine = "\u001B[36m >> [" + player.getCurrentStation().getName() + "] " + (st != null ? st : "")
+			metadataLine = "\u001B[36m ♪ [" + player.getCurrentStation().getName() + "] " + (st != null ? st : "")
 					+ "\u001B[0m";
 		} else {
 			metadataLine = "";
@@ -71,7 +70,6 @@ public class MenuRenderer {
 		}
 
 		String[] inactiveItems = buildInactiveItems(totalPages, currentPageSelection);
-
 
 		int pageIndex = Math.max(0, Math.min(currentPageSelection - 1, pagesContent.size() - 1));
 		List<String> currentPageMenuItems = pagesContent.get(pageIndex);
@@ -117,14 +115,32 @@ public class MenuRenderer {
 		terminal.flush();
 	}
 
+	private int getVisualWidth(String s) {
+		int width = 0;
+		for (int i = 0; i < s.length(); i++) {
+			int codePoint = s.codePointAt(i);
+			if (Character.isSupplementaryCodePoint(codePoint)) {
+				i++;
+			}
+
+			if (codePoint >= 0x1F000 || codePoint == 0x2B50) {
+				width += 2;
+			} else {
+				width += 1;
+			}
+		}
+		return width;
+	}
+
 	private String[] buildLine(int i, List<String> currentPageMenuItems, String[] inactiveItems) {
-		String longest = currentPageMenuItems.stream().max(Comparator.comparingInt(String::length))
-				.orElse(" ".repeat(11));
-		int lineSize = Math.max(longest.length() + 5, 16);
+		int maxVisualWidth = currentPageMenuItems.stream().mapToInt(this::getVisualWidth).max().orElse(11);
+		int lineSize = Math.max(maxVisualWidth + 5, 16);
 
 		String[] res = new String[2];
 		if (i < inactiveItems.length && i < currentPageMenuItems.size()) {
-			res[0] = currentPageMenuItems.get(i) + " ".repeat(lineSize - currentPageMenuItems.get(i).length());
+			String item = currentPageMenuItems.get(i);
+			int visualWidth = getVisualWidth(item);
+			res[0] = item + " ".repeat(lineSize - visualWidth);
 			res[1] = inactiveItems[i];
 		} else if (i < inactiveItems.length) {
 			res[0] = " ".repeat(lineSize);

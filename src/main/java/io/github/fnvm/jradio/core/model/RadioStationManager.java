@@ -23,7 +23,20 @@ public class RadioStationManager {
 	}
 
 	public List<RadioStation> getAllStations() {
-		return new ArrayList<>(stations.values());
+		
+		List<RadioStation> load = new ArrayList<>(stations.values());
+		List<RadioStation> temp = new ArrayList<>();
+		for (RadioStation station : load) {
+			if (station.isFavorite()) {
+				temp.add(station);
+			}
+		}
+		for (RadioStation station : load) {
+			if (!station.isFavorite()) {
+				temp.add(station);
+			}
+		}
+		return temp;
 	}
 
 	public List<RadioStation> getFavorites() {

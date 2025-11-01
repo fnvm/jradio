@@ -54,5 +54,6 @@ public class RadioStationsService {
 
 	public void toggleFavorite(String id) {
 		stationManager.toggleFavorite(id);
+		saveData();
 	}
 }

@@ -34,11 +34,11 @@ public final class EditStationAction implements MenuAction {
 			inactiveItems[1] = currentStation.getUrl();
 			inactiveItems[2] = currentStation.getNote();
 			if (currentStation.isFavorite()) {
-				inactiveItems[3] = "♡";
+				inactiveItems[3] = "♥";
 			} else {
 				inactiveItems[3] = "No";
 			}
-			inactiveItems[4] = System.lineSeparator() + "↩  Back (B)";
+			inactiveItems[4] = System.lineSeparator() + "←  Back (B)";
 
 			final boolean[] back = { false };
 			Map<String, Consumer<Integer>> hotkeys = new HashMap<>();
@@ -57,7 +57,10 @@ public final class EditStationAction implements MenuAction {
 			case 0 -> editName(currentStation, service, terminal);
 			case 1 -> editUrl(currentStation, service, terminal);
 			case 2 -> editNote(currentStation, service, terminal);
-			case 3 -> toggleFaorites(currentStation, service);
+			case 3 -> { 
+				toggleFaorites(currentStation, service);
+				return;
+			}
 			}
 
 		}
