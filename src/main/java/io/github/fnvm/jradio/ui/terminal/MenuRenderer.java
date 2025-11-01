@@ -11,7 +11,7 @@ public class MenuRenderer {
 	private final TerminalManager terminal;
 	private final String title;
 	private final String[] menuItems;
-	private final String[] inactiveItems;
+	private String[] inactiveItems;
 	private Player player;
 	private String metadataLine = "";
 	private List<List<String>> pagesContent;
@@ -71,14 +71,21 @@ public class MenuRenderer {
 			pagesContent.add(Arrays.asList(menuItems));
 		}
 
+		if (totalPages > 1) {
+			int len = inactiveItems.length;
+			inactiveItems = Arrays.copyOf(inactiveItems,
+					len + (inactiveItems[len - 1].startsWith("[") ? 0 : 1));
+			inactiveItems[inactiveItems.length - 1] = System.lineSeparator() + "[" + currentPageSelection + " / " + totalPages + "]";
+		}
+
 		List<String> currentPageMenuItems = pagesContent.get(currentPageSelection - 1);
 
-		for (int j = 0; j < Math.max(inactiveItems.length, currentPageMenuItems.size()); j++) {
-			if (j == 0)
+		for (int i = 0; i < Math.max(inactiveItems.length, currentPageMenuItems.size()); i++) {
+			if (i == 0)
 				terminal.print(System.lineSeparator());
-			String[] items = buildLine(j, currentPageMenuItems);
+			String[] items = buildLine(i, currentPageMenuItems);
 
-			if (j == currentSelection)
+			if (i == currentSelection)
 				terminal.print("\u001B[1;32m> ");
 			else
 				terminal.print("  ");
@@ -86,10 +93,6 @@ public class MenuRenderer {
 			terminal.print(items[0]);
 			terminal.print("\u001B[0m\u001B[90m");
 			terminal.println(items[1] + "\u001B[0m");
-		}
-
-		if (totalPages > 1) {
-			terminal.print(System.lineSeparator() + "  [" + currentPageSelection + " / " + totalPages + "]");
 		}
 
 		terminal.flush();

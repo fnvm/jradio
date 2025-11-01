@@ -58,7 +58,7 @@ public class StationsMenu {
 			});
 
 			String[] inactiveItems = new String[] { "Play / Pause (P)", "Add Station (A)", "Remove Station (D)",
-					"Edit Station (E)", "", "↩  Back (B)", "" };
+					"Edit Station (E)", "", "↩  Back (B)" };
 
 			stationsMenu = new MenuController(terminal, "Stations List", selection, inactiveItems,
 					options, stationNames);
