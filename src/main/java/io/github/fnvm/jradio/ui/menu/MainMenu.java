@@ -17,6 +17,7 @@ public class MainMenu {
 	private final Player player;
 	private final HistoryService historyService;
 	private final StorageManager storage;
+	private boolean running;
 
 	public MainMenu(TerminalManager terminal) throws IOException {
 		this.terminal = terminal;
@@ -24,14 +25,15 @@ public class MainMenu {
 		storage = new StorageManager();
 		this.historyService = new HistoryService(storage);
 		this.player = new Player(historyService);
+		running = true;
 	}
 
 	public void run() throws IOException {
-
+		
 		StationsMenu stationsMenu = new StationsMenu(player);
 		RecentlyPlayed recentlyPlayed = new RecentlyPlayed(historyService, player);
 
-		while (true) {
+		while (running) {
 			final boolean[] back = { false };
 			Map<String, Consumer<Integer>> hotkeys = new HashMap<>();
 			hotkeys.put("b", (c) -> back[0] = true);
@@ -60,11 +62,11 @@ public class MainMenu {
 		}
 	}
 
-	private void exit() {
-		if (player.isPlaying())
-			player.stop();
-		terminal.clearScreen();
-		System.exit(0);
-	}
+    private void exit() {
+        if (player.isPlaying())
+            player.stop();
+        terminal.clearScreen();
+        running = false; 
+    }
 
 }

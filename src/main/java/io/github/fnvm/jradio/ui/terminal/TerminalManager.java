@@ -4,7 +4,6 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.keymap.BindingReader;
 import org.jline.utils.InfoCmp.Capability;
-
 import org.jline.utils.NonBlockingReader;
 
 import java.io.IOException;
@@ -22,6 +21,12 @@ public class TerminalManager implements AutoCloseable {
 		try {
 			terminal = TerminalBuilder.builder().system(true).jansi(true).build();
 
+			terminal.handle(Terminal.Signal.INT, signal -> {
+				LOGGER.log(Level.INFO, "Received SIGINT (Ctrl+C)");
+				cleanup();
+				System.exit(0);
+			});
+
 			terminal.enterRawMode();
 
 			reader = terminal.reader();
@@ -33,26 +38,35 @@ public class TerminalManager implements AutoCloseable {
 		}
 	}
 
+	private void cleanup() {
+		try {
+			clearScreen();
+			terminal.close();
+		} catch (Exception e) {
+			LOGGER.log(Level.ERROR, "Cleanup error", e);
+		}
+	}
+
 	public void clearScreen() {
 		terminal.puts(Capability.clear_screen);
 		flush();
 	}
-	
+
 	public void cursorHome() {
-	    terminal.puts(Capability.cursor_address, 0, 0);
-	    flush();
+		terminal.puts(Capability.cursor_address, 0, 0);
+		flush();
 	}
 
 	public void cursorDown(int lines) {
-	    for (int i = 0; i < lines; i++) {
-	        terminal.puts(Capability.cursor_down);
-	    }
-	    flush();
+		for (int i = 0; i < lines; i++) {
+			terminal.puts(Capability.cursor_down);
+		}
+		flush();
 	}
 
 	public void eraseLine() {
-	    terminal.puts(Capability.clr_eol);
-	    flush();
+		terminal.puts(Capability.clr_eol);
+		flush();
 	}
 
 	public void print(String text) {
@@ -77,6 +91,6 @@ public class TerminalManager implements AutoCloseable {
 
 	@Override
 	public void close() throws IOException {
-		terminal.close();
+		cleanup();
 	}
 }
