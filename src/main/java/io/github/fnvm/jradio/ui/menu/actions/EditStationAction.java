@@ -44,9 +44,11 @@ public final class EditStationAction implements MenuAction {
 			Map<String, Consumer<Integer>> hotkeys = new HashMap<>();
 			hotkeys.put("b", (c) -> back[0] = true);
 
-			MenuController options = new MenuController(terminal, "Edit Station", currentSelection, inactiveItems,
+			MenuController options = new MenuController(terminal, "Edit Station", currentSelection, 1, inactiveItems,
 					hotkeys, "Name", "URL", "Note", "Toggle favorites");
-			currentSelection = options.show() - 10_000;
+			int[] groupSel = options.show();
+			groupSel[0] -= 10_000;
+			currentSelection = groupSel[0];
 
 			if (back[0]) {
 				return;

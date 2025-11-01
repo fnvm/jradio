@@ -11,19 +11,18 @@ public class MenuRenderer {
 	private final TerminalManager terminal;
 	private final String title;
 	private final String[] menuItems;
-	private String[] inactiveItems;
+	private final String[] originalInactiveItems;
 	private Player player;
 	private String metadataLine = "";
 	private List<List<String>> pagesContent;
 
 	private final int metadataRow = 3;
-	private static final int ITEMS_PER_PAGE = 15;
 
 	public MenuRenderer(TerminalManager terminal, String title, String[] inactiveItems, String[] menuItems) {
 		this.terminal = terminal;
 		this.title = title;
 		this.menuItems = menuItems;
-		this.inactiveItems = inactiveItems;
+		this.originalInactiveItems = inactiveItems;
 		this.pagesContent = new ArrayList<>();
 	}
 
@@ -57,12 +56,12 @@ public class MenuRenderer {
 		pagesContent.clear();
 
 		int totalPages = 1;
-		if (menuItems.length > ITEMS_PER_PAGE) {
-			totalPages = (int) Math.ceil((double) menuItems.length / ITEMS_PER_PAGE);
+		if (menuItems.length > MenuController.ITEMS_PER_PAGE) {
+			totalPages = (int) Math.ceil((double) menuItems.length / MenuController.ITEMS_PER_PAGE);
 
 			for (int i = 0; i < totalPages; i++) {
-				int fromIndex = i * ITEMS_PER_PAGE;
-				int toIndex = Math.min((i + 1) * ITEMS_PER_PAGE, menuItems.length);
+				int fromIndex = i * MenuController.ITEMS_PER_PAGE;
+				int toIndex = Math.min((i + 1) * MenuController.ITEMS_PER_PAGE, menuItems.length);
 
 				List<String> currentPage = Arrays.asList(menuItems).subList(fromIndex, toIndex);
 				pagesContent.add(currentPage);
@@ -71,19 +70,16 @@ public class MenuRenderer {
 			pagesContent.add(Arrays.asList(menuItems));
 		}
 
-		if (totalPages > 1) {
-			int len = inactiveItems.length;
-			inactiveItems = Arrays.copyOf(inactiveItems,
-					len + (inactiveItems[len - 1].startsWith("[") ? 0 : 1));
-			inactiveItems[inactiveItems.length - 1] = "[" + currentPageSelection + " / " + totalPages + "]";
-		}
+		String[] inactiveItems = buildInactiveItems(totalPages, currentPageSelection);
 
-		List<String> currentPageMenuItems = pagesContent.get(currentPageSelection - 1);
+
+		int pageIndex = Math.max(0, Math.min(currentPageSelection - 1, pagesContent.size() - 1));
+		List<String> currentPageMenuItems = pagesContent.get(pageIndex);
 
 		for (int i = 0; i < Math.max(inactiveItems.length, currentPageMenuItems.size()); i++) {
 			if (i == 0)
 				terminal.print(System.lineSeparator());
-			String[] items = buildLine(i, currentPageMenuItems);
+			String[] items = buildLine(i, currentPageMenuItems, inactiveItems);
 
 			if (i == currentSelection)
 				terminal.print("\u001B[1;32m> ");
@@ -96,6 +92,16 @@ public class MenuRenderer {
 		}
 
 		terminal.flush();
+	}
+
+	private String[] buildInactiveItems(int totalPages, int currentPageSelection) {
+		if (totalPages <= 1) {
+			return originalInactiveItems;
+		}
+
+		String[] result = Arrays.copyOf(originalInactiveItems, originalInactiveItems.length + 1);
+		result[originalInactiveItems.length] = "[" + currentPageSelection + " / " + totalPages + "]";
+		return result;
 	}
 
 	public void refreshMetadataLine() {
@@ -111,7 +117,7 @@ public class MenuRenderer {
 		terminal.flush();
 	}
 
-	private String[] buildLine(int i, List<String> currentPageMenuItems) {
+	private String[] buildLine(int i, List<String> currentPageMenuItems, String[] inactiveItems) {
 		String longest = currentPageMenuItems.stream().max(Comparator.comparingInt(String::length))
 				.orElse(" ".repeat(11));
 		int lineSize = Math.max(longest.length() + 5, 16);

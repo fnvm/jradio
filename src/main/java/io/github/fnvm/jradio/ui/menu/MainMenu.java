@@ -43,22 +43,22 @@ public class MainMenu {
 					player.stop();
 			});
 
-			MenuController mainMenu = new MenuController(terminal, "Jradio", currentSelection, new String[] {}, hotkeys,
+			MenuController mainMenu = new MenuController(terminal, "Jradio", currentSelection, 1, new String[] {}, hotkeys,
 					new String[] { "All Stations", "Recently Played", "Exit" });
 			mainMenu.setPlayer(player);
 
-			int temp = mainMenu.show();
+			int temp[] = mainMenu.show();
 
 			if (back[0] == true)
 				exit();
-			switch (temp) {
+			switch (temp[0]) {
 			case -1 -> exit();
 			case 10_000 -> stationsMenu.showStationsMenu(terminal);
 			case 10_001 -> recentlyPlayed.showRecentlyPlayed(terminal);
 			case 10_002 -> exit();
 			}
 
-			currentSelection = (temp >= 10_000 ? temp - 10_000 : temp);
+			currentSelection = (temp[0] >= 10_000 ? temp[0] - 10_000 : temp[0]);
 
 		}
 	}

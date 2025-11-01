@@ -22,22 +22,23 @@ public class MenuController {
 	private int currentSelection;
 	private volatile boolean running = false;
 	private Thread metadataUpdateThread;
-	
-	private static final int ITEMS_PER_PAGE = 15;
 
-	public MenuController(TerminalManager terminal, String title, int currentSelection, String... menuItems) {
-		this(terminal, title, currentSelection, new String[] {}, Map.of(), menuItems);
+	public static final int ITEMS_PER_PAGE = 15;
+
+	public MenuController(TerminalManager terminal, String title, int currentSelection, int currentPageSelection,
+			String... menuItems) {
+		this(terminal, title, currentSelection, currentPageSelection, new String[] {}, Map.of(), menuItems);
 	}
 
-	public MenuController(TerminalManager terminal, String title, int currentSelection, String[] inactiveItems,
-			Map<String, Consumer<Integer>> hotkeys, String... menuItems) {
+	public MenuController(TerminalManager terminal, String title, int currentSelection, int currentPageSelection,
+			String[] inactiveItems, Map<String, Consumer<Integer>> hotkeys, String... menuItems) {
 
 		this.terminal = terminal;
 		this.renderer = new MenuRenderer(terminal, title, inactiveItems, menuItems);
 		this.menuItems = menuItems;
 		this.currentSelection = currentSelection;
 		this.hotkeys = hotkeys;
-		this.currentPageSelection = 1;
+		this.currentPageSelection = currentPageSelection;
 		this.keyMap = buildKeyMap();
 	}
 
@@ -46,8 +47,11 @@ public class MenuController {
 		this.renderer.setPlayer(player);
 	}
 
-	public int show() {
+	public int[] show() {
 		startMetadataUpdater();
+		
+		// Валидация перед первым рендером
+		validateSelection();
 		renderer.render(currentSelection, currentPageSelection);
 
 		try {
@@ -60,30 +64,35 @@ public class MenuController {
 				switch (key) {
 					case "up" -> {
 						moveUp();
+						validateSelection(); 
 						renderer.render(currentSelection, currentPageSelection);
 					}
 					case "down" -> {
 						moveDown();
+						validateSelection();
 						renderer.render(currentSelection, currentPageSelection);
 					}
 					case "right" -> {
 						moveRight();
+						validateSelection();
 						renderer.render(currentSelection, currentPageSelection);
 					}
 					case "left" -> {
 						moveLeft();
+						validateSelection();
 						renderer.render(currentSelection, currentPageSelection);
 					}
 					case "enter" -> {
 						int globalIndex = getGlobalIndex();
-						return globalIndex + 10_000;
+						return new int[] {globalIndex + 10_000, currentPageSelection};
 					}
 					default -> {
 						boolean handled = handleHotkey(key);
 						if (handled) {
+							validateSelection();
 							renderer.render(currentSelection, currentPageSelection);
 							int globalIndex = getGlobalIndex();
-							return globalIndex;
+							return new int[] {globalIndex, currentPageSelection};
 						}
 					}
 				}
@@ -92,6 +101,7 @@ public class MenuController {
 			stopMetadataUpdater();
 		}
 	}
+
 
 	private void moveUp() {
 		if (currentSelection > 0) {
@@ -110,7 +120,7 @@ public class MenuController {
 			currentSelection = 0;
 		}
 	}
-	
+
 	private void moveRight() {
 		int totalPages = getTotalPages();
 		if (currentPageSelection < totalPages) {
@@ -118,24 +128,24 @@ public class MenuController {
 			currentSelection = 0;
 		}
 	}
-	
+
 	private void moveLeft() {
 		if (currentPageSelection > 1) {
 			currentPageSelection--;
 			currentSelection = 0;
 		}
 	}
-	
+
 	private int getTotalPages() {
 		return (int) Math.ceil((double) menuItems.length / ITEMS_PER_PAGE);
 	}
-	
+
 	private int getItemsOnCurrentPage() {
 		int startIndex = (currentPageSelection - 1) * ITEMS_PER_PAGE;
 		int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, menuItems.length);
 		return endIndex - startIndex;
 	}
-	
+
 	private int getGlobalIndex() {
 		return (currentPageSelection - 1) * ITEMS_PER_PAGE + currentSelection;
 	}
@@ -182,6 +192,33 @@ public class MenuController {
 		running = false;
 		if (metadataUpdateThread != null) {
 			metadataUpdateThread.interrupt();
+		}
+	}
+
+	private void validateSelection() {
+		if (menuItems.length == 0) {
+			currentSelection = 0;
+			currentPageSelection = 1;
+			return;
+		}
+		
+		int totalPages = getTotalPages();
+		
+		if (currentPageSelection > totalPages) {
+			currentPageSelection = totalPages;
+		}
+		
+		if (currentPageSelection < 1) {
+			currentPageSelection = 1;
+		}
+		
+		int itemsOnPage = getItemsOnCurrentPage();
+		if (currentSelection >= itemsOnPage) {
+			currentSelection = Math.max(0, itemsOnPage - 1);
+		}
+		
+		if (currentSelection < 0) {
+			currentSelection = 0;
 		}
 	}
 

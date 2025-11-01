@@ -20,6 +20,7 @@ public class StationsMenu {
 	private final RadioStationsService stationService;
 	private final Player player;
 	private int selection;
+	private int pageSelection;
 	private MenuController stationsMenu;
 
 
@@ -29,6 +30,7 @@ public class StationsMenu {
 		this.stationService = new RadioStationsService();
 		this.player = player;
 		selection = 0;
+		pageSelection = 1;
 	}
 
 	public void showStationsMenu(TerminalManager terminal) throws IOException {
@@ -58,19 +60,23 @@ public class StationsMenu {
 			});
 
 			String[] inactiveItems = new String[] { "Play / Pause (P)", "Add Station (A)", "Remove Station (D)",
-					"Edit Station (E)", "", "↩  Back (B)" };
+					"Edit Station (E)", "", "↩  Back (B)", "" };
 
-			stationsMenu = new MenuController(terminal, "Stations List", selection, inactiveItems,
+			stationsMenu = new MenuController(terminal, "Stations List", selection, pageSelection, inactiveItems,
 					options, stationNames);
 			stationsMenu.setPlayer(player);
 			
 
 			try {
-				selection = stationsMenu.show();
-				if (selection >= 10_000) {
-					selection -= 10_000;
-					new EditStationAction(selection).execute(terminal, stationService);
+				int[] groupSel = stationsMenu.show();
+				pageSelection = groupSel[1];	
+				int globalInd = groupSel[0];
+				
+				if (globalInd >= 10_000) {
+					globalInd -= 10_000;
+					new EditStationAction(globalInd).execute(terminal, stationService);
 				}
+				selection = globalInd % MenuController.ITEMS_PER_PAGE;
 			} catch (ExitMenuException ex) {
 				break;
 			}

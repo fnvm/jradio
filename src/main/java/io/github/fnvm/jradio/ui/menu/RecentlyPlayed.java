@@ -22,6 +22,7 @@ import io.github.fnvm.jradio.ui.terminal.TerminalManager;
 
 public class RecentlyPlayed {
 	private int currentSelection;
+	private int currentPageSelection;
 	private Player player;
 	private HistoryService historyService;
 
@@ -31,11 +32,11 @@ public class RecentlyPlayed {
 		currentSelection = 0;
 		this.historyService = historyService;
 		this.player = player;
+		currentPageSelection = 1;
 	}
 
 	public void showRecentlyPlayed(TerminalManager terminal) throws IOException {
 
-		currentSelection = 0;
 		Map<String, Consumer<Integer>> options = new HashMap<>();
 		boolean[] back = { false };
 		options.put("b", (c) -> back[0] = true);
@@ -54,18 +55,25 @@ public class RecentlyPlayed {
 
 			MenuController menu = new MenuController(terminal, "Recently Played",
 					currentSelection,
-					new String[] { "Clear history (D)", "", "↩  Back (B)" },
+					currentPageSelection,
+					new String[] { "Clear history (D)", "", "↩  Back (B)", "" },
 					options,
 					items);
 			menu.setPlayer(player);
 
-			int temp = menu.show();
-			if (temp >= 10_000) {
-				currentSelection = temp - 10_000;
-				String songName = items[currentSelection];
+			int[] groupSel = menu.show();
+			currentPageSelection = groupSel[1];
+			
+			if (groupSel[0] >= 10_000) {
+				int globalIndex = groupSel[0] - 10_000;
+				
+				currentSelection = globalIndex % MenuController.ITEMS_PER_PAGE;
+				
+				String songName = items[globalIndex];
 				youtubeSearch(songName);
 			} else {
-				currentSelection = temp;
+				int globalIndex = groupSel[0];
+				currentSelection = globalIndex % MenuController.ITEMS_PER_PAGE;
 			}
 		}
 	}

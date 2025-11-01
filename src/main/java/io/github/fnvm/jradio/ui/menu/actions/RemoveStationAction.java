@@ -23,10 +23,11 @@ public class RemoveStationAction implements MenuAction {
 		
 		terminal.clearScreen();
 
-		MenuController yn = new MenuController(terminal, "Remove station?", 0, "yes", "no");
+		MenuController yn = new MenuController(terminal, "Remove station?", 0, 1, "yes", "no");
 
-		int choise = yn.show() - 10_000;
-		if (choise == 0) {
+		int choise[] = yn.show();
+		choise[0] -= 10_000;
+		if (choise[0] == 0) {
 			RadioStation curr = service.getAllStations().get(currentSelection);
 			service.removeStation(curr.getId());
 		}

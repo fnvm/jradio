@@ -21,9 +21,11 @@ public class HistoryService {
         this.recentlyPlayed = new ArrayList<>(storageManager.loadHistory());
     }
 
-    public void add(String stationName) {
-        if (recentlyPlayed.isEmpty() || !recentlyPlayed.get(recentlyPlayed.size() - 1).equals(stationName)) {
-            recentlyPlayed.add(stationName);
+    public void add(String streamTitle) {
+    	if (streamTitle.isBlank()) return;
+    	
+        if (recentlyPlayed.isEmpty() || !recentlyPlayed.get(recentlyPlayed.size() - 1).equals(streamTitle)) {
+            recentlyPlayed.add(streamTitle);
             save();
         }
     }
