@@ -8,6 +8,8 @@
 A simple console radio written in Java  
 ➔ [Releases page](https://github.com/fnvm/jradio/releases)
 
+You can search for radio stations at https://www.radio-browser.info/
+
 ---
 
 During the build, the project expects the `ffplay` binary in:
