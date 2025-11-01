@@ -75,7 +75,7 @@ public class MenuRenderer {
 			int len = inactiveItems.length;
 			inactiveItems = Arrays.copyOf(inactiveItems,
 					len + (inactiveItems[len - 1].startsWith("[") ? 0 : 1));
-			inactiveItems[inactiveItems.length - 1] = System.lineSeparator() + "[" + currentPageSelection + " / " + totalPages + "]";
+			inactiveItems[inactiveItems.length - 1] = "[" + currentPageSelection + " / " + totalPages + "]";
 		}
 
 		List<String> currentPageMenuItems = pagesContent.get(currentPageSelection - 1);

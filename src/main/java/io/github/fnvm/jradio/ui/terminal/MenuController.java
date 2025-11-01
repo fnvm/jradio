@@ -96,6 +96,9 @@ public class MenuController {
 	private void moveUp() {
 		if (currentSelection > 0) {
 			currentSelection--;
+		} else {
+			int currentItems = getItemsOnCurrentPage();
+			currentSelection = currentItems - 1;
 		}
 	}
 
@@ -103,6 +106,8 @@ public class MenuController {
 		int itemsOnCurrentPage = getItemsOnCurrentPage();
 		if (currentSelection < itemsOnCurrentPage - 1) {
 			currentSelection++;
+		} else {
+			currentSelection = 0;
 		}
 	}
 	
