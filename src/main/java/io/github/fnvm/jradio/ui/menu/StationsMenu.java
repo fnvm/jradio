@@ -23,7 +23,7 @@ public class StationsMenu {
 	private int selection;
 	private int pageSelection;
 	private MenuController stationsMenu;
-	private String heartSymbol;
+	private String favoriteSymbol;
 
 	private static final Logger LOGGER = System.getLogger(StationsMenu.class.getName());
 
@@ -32,7 +32,7 @@ public class StationsMenu {
 		this.player = player;
 		selection = 0;
 		pageSelection = 1;
-		heartSymbol = App.OS.contains("windows") ? " ♥" : " ⭐";
+		favoriteSymbol = App.OS.contains("windows") ? " ♥" : " ⭐";
 	}
 
 	public void showStationsMenu(TerminalManager terminal) throws IOException {
@@ -40,7 +40,7 @@ public class StationsMenu {
 			List<RadioStation> stations = stationService.getAllStations();
 
 			String[] stationNames = stations.stream().map((station) -> {
-				return station.getName() + (station.isFavorite() ? heartSymbol : "");
+				return station.getName() + (station.isFavorite() ? favoriteSymbol : "");
 			}).toArray(String[]::new);
 
 			Map<String, Consumer<Integer>> options = new HashMap<>();
