@@ -10,7 +10,8 @@ import io.github.fnvm.jradio.ui.terminal.TerminalManager;
 
 public class App {
 	private static final System.Logger LOGGER = System.getLogger(App.class.getName());
-	public final static String OS = System.getProperty("os.name").toLowerCase();
+	
+	public static final String OS = System.getProperty("os.name").toLowerCase();
 	
 	public static void main(String[] args) {
 		setupLogging();
