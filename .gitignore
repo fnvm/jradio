@@ -1,4 +1,7 @@
 target/
+*.prefs
+.metadata/
+.settings/
 src/main/resources/ffmpeg/
 pom.xml.tag
 pom.xml.releaseBackup

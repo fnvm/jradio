@@ -9,7 +9,6 @@
   <version>1.0.0</version>
 
   <name>Jradio</name>
-  <!-- FIXME change it to the project's website -->
   <url>https://github.com/fnvm/jradio</url>
 
   <properties>
@@ -31,29 +30,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Optionally: parameterized tests support -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.jline/jline -->
-    <dependency>
       <groupId>org.jline</groupId>
       <artifactId>jline</artifactId>
       <version>3.30.2</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.jline/jline-terminal-jna -->
     <dependency>
       <groupId>org.jline</groupId>
       <artifactId>jline-terminal-jna</artifactId>
       <version>3.30.6</version>
     </dependency>
-	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 	<dependency>
 	    <groupId>com.google.code.gson</groupId>
 	    <artifactId>gson</artifactId>
