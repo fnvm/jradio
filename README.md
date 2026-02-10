@@ -1,7 +1,8 @@
 # jradio
 
 
-<img width="346" height="263" alt="image" src="https://github.com/user-attachments/assets/7c360292-5064-49c3-96b0-9bda9ef7160b" />
+![](res/screen1.png)
+![](res/screen2.png)
 
 ---
 
