@@ -5,10 +5,12 @@
 
 ---
 
-A simple console radio written in Java  
+A simple console radio 
 ➔ [Releases page](https://github.com/fnvm/jradio/releases)
 
 You can search for radio stations at https://www.radio-browser.info/
+
+**Requirements:** Java 17+.
 
 ---
 
