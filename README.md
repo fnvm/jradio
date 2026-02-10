@@ -1,8 +1,12 @@
 # jradio
 
 
+
+
 ![](res/screen1.png)
-![](res/screen2.png)
+
+<img src="res/screen2.png" width="600">
+
 
 ---
 
