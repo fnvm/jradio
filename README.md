@@ -5,7 +5,7 @@
 
 ![](res/screen1.png)
 
-<img src="res/screen2.png" width="600">
+<img src="res/screen2.png" width="650">
 
 
 ---
